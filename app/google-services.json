@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "718347440367",
+    "project_id": "coordinadoraapp-4b21a",
+    "storage_bucket": "coordinadoraapp-4b21a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:718347440367:android:fc67b50615af1d3ddd0b1a",
+        "android_client_info": {
+          "package_name": "com.example.coordinadoraapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCMN2J7OIUbyG0X2lhlUouqPlh7pchuhyE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
