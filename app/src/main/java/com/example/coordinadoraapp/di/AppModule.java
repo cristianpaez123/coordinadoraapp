@@ -2,6 +2,8 @@ package com.example.coordinadoraapp.di;
 
 import android.content.Context;
 
+import com.example.coordinadoraapp.data.repository.AuthRepository;
+import com.example.coordinadoraapp.domain.usecase.LoginUseCase;
 import com.google.firebase.auth.FirebaseAuth;
 
 import javax.inject.Singleton;
@@ -21,5 +23,11 @@ public class AppModule {
     @Singleton
     Context provideContext() {
         return context;
+    }
+
+    @Provides
+    @Singleton
+    public LoginUseCase provideLoginUseCase(AuthRepository authRepository) {
+        return new LoginUseCase(authRepository);
     }
 }

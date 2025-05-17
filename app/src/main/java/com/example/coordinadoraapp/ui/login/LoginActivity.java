@@ -18,7 +18,6 @@ public class LoginActivity extends AppCompatActivity {
     @Inject
     LoginViewModelFactory factory;
     private LoginViewModel viewModel;
-
     private ActivityLoginBinding binding;
 
     @Override

@@ -4,7 +4,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.coordinadoraapp.data.repository.AuthRepository;
+import com.example.coordinadoraapp.domain.usecase.LoginUseCase;
+import com.google.firebase.auth.AuthResult;
 
 import javax.inject.Inject;
 
@@ -14,7 +15,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class LoginViewModel extends ViewModel {
 
-    private final AuthRepository authRepository;
+    private final LoginUseCase loginUseCase;
     private final CompositeDisposable disposables = new CompositeDisposable();
 
     private final MutableLiveData<Boolean> _loginSuccess = new MutableLiveData<>();
@@ -24,13 +25,13 @@ public class LoginViewModel extends ViewModel {
     public LiveData<String> error = _error;
 
     @Inject
-    public LoginViewModel(AuthRepository authRepository) {
-        this.authRepository = authRepository;
+    public LoginViewModel(LoginUseCase loginUseCase) {
+        this.loginUseCase = loginUseCase;
     }
 
     public void login(String email, String password) {
         disposables.add(
-                authRepository.login(email, password)
+                loginUseCase.execute(email, password)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
