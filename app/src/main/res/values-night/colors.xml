@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary -->
+    <color name="colorPrimary">#90CAF9</color>
+    <color name="colorPrimaryContainer">#1565C0</color>
+
+    <!-- On Primary -->
+    <color name="colorOnPrimary">#000000</color>
+
+    <!-- Background -->
+    <color name="colorBackground">#121212</color>
+    <color name="colorSurface">#1E1E1E</color>
+    <color name="colorOnBackground">#FFFFFF</color>
+
+    <!-- Error / Accent -->
+    <color name="colorError">#FF8A65</color>
+
+    <!-- Outline -->
+    <color name="colorOutline">#444444</color>
+
+    <!-- Secondary text -->
+    <color name="colorOnSurfaceVariant">#AAAAAA</color>
+</resources>

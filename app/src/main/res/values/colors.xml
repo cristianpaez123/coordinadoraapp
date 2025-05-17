@@ -1,17 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#1E1F22</color>
+<!-- Primary -->
+<color name="colorPrimary">#0052A7</color>
+<color name="colorPrimaryContainer">#1976D2</color>
 
-    <color name="colorPrimary">#1A73E8</color>
-    <color name="colorPrimaryDark">#174EA6</color>
-    <color name="colorAccent">#FF3B30</color>
-    <color name="colorBackground">#FFFFFF</color>
-    <color name="colorSurface">#F1F3F4</color>
-    <color name="colorOnPrimary">#FFFFFF</color>
-    <color name="colorOnSurface">#202124</color>
+<!-- On Primary (text on buttons) -->
+<color name="colorOnPrimary">#FFFFFF</color>
 
-    <color name="dark_background">#121212</color>
-    <color name="dark_surface">#1E1E1E</color>
-    <color name="dark_onSurface">#EDEDED</color>
+<!-- Background -->
+<color name="colorBackground">#F9FAFC</color>
+<color name="colorSurface">#FFFFFF</color>
+<color name="colorOnBackground">#212121</color>
+
+<!-- Error / Accent -->
+<color name="colorError">#EF6C00</color>
+
+<!-- Outline -->
+<color name="colorOutline">#BDBDBD</color>
+
+<!-- Secondary text -->
+<color name="colorOnSurfaceVariant">#616161</color>
 </resources>
