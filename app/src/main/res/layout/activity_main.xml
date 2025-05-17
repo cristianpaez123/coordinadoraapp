@@ -10,7 +10,7 @@
     android:background="?android:windowBackground"
     tools:context=".ui.MainActivity">
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/logoImage"
         android:layout_width="200dp"
         android:layout_height="200dp"
@@ -26,7 +26,7 @@
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Correo electrónico"
+        android:hint="@string/email_hint"
         app:boxBackgroundMode="outline"
         app:startIconDrawable="@drawable/ic_person"
         app:layout_constraintTop_toBottomOf="@id/logoImage"
@@ -46,7 +46,7 @@
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Contraseña"
+        android:hint="@string/password_hint"
         app:boxBackgroundMode="outline"
         app:startIconDrawable="@drawable/ic_password"
         app:layout_constraintTop_toBottomOf="@id/textInputLayoutEmail"
@@ -65,7 +65,7 @@
         android:id="@+id/btnLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Iniciar Sesión"
+        android:text="@string/login_button"
         android:textColor="@color/colorOnPrimary"
         android:layout_marginTop="24dp"
         app:cornerRadius="16dp"
