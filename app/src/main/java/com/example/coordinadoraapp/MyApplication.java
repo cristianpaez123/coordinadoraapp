@@ -5,10 +5,10 @@ import android.app.Application;
 import com.example.coordinadoraapp.di.AppComponent;
 import com.example.coordinadoraapp.di.AppModule;
 import com.example.coordinadoraapp.di.DaggerAppComponent;
+import com.example.coordinadoraapp.di.FirebaseModule;
 
 public class MyApplication extends Application {
-    private static AppComponent appComponent;
-
+    public AppComponent appComponent;
     @Override
     public void onCreate() {
         super.onCreate();
@@ -16,9 +16,5 @@ public class MyApplication extends Application {
         appComponent = DaggerAppComponent.builder()
                 .appModule(new AppModule(this))
                 .build();
-    }
-
-    public static AppComponent getAppComponent() {
-        return appComponent;
     }
 }

@@ -2,6 +2,8 @@ package com.example.coordinadoraapp.di;
 
 import android.content.Context;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import javax.inject.Singleton;
 
 import dagger.Module;
