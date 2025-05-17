@@ -13,8 +13,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CoordinadoraApp"
         tools:targetApi="31">
-        <activity android:name=".ui.login.LoginActivity"
-            android:exported="true">
+        <activity
+            android:name=".ui.login.LoginActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
