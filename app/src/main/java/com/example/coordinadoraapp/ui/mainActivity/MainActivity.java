@@ -1,4 +1,4 @@
-package com.example.coordinadoraapp.ui;
+package com.example.coordinadoraapp.ui.mainActivity;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;

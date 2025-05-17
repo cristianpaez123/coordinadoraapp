@@ -11,14 +11,15 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.coordinadoraapp.MyApplication;
 import com.example.coordinadoraapp.R;
-import com.example.coordinadoraapp.ui.MainActivity;
+import com.example.coordinadoraapp.di.DaggerViewModelFactory;
+import com.example.coordinadoraapp.ui.mainActivity.MainActivity;
 
 import javax.inject.Inject;
 
 public class LoginActivity extends AppCompatActivity {
 
     @Inject
-    LoginViewModelFactory factory;
+    ViewModelProvider.Factory viewModelFactory;
     private LoginViewModel viewModel;
 
     private EditText emailField, passwordField;
@@ -34,7 +35,7 @@ public class LoginActivity extends AppCompatActivity {
         passwordField = findViewById(R.id.editTextPassword);
         loginButton = findViewById(R.id.btnLogin);
 
-        viewModel = new ViewModelProvider(this, factory).get(LoginViewModel.class);
+        viewModel = new ViewModelProvider(this, viewModelFactory).get(LoginViewModel.class);
 
         loginButton.setOnClickListener(v -> {
             String email = emailField.getText().toString();

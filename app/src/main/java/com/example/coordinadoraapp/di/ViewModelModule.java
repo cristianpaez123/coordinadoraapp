@@ -1,0 +1,27 @@
+package com.example.coordinadoraapp.di;
+
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
+
+import com.example.coordinadoraapp.ui.login.LoginViewModel;
+import com.example.coordinadoraapp.ui.mainActivity.MainActivityViewModel;
+
+import dagger.Binds;
+import dagger.Module;
+import dagger.multibindings.IntoMap;
+
+@Module
+public abstract class ViewModelModule {
+    @Binds
+    @IntoMap
+    @ViewModelKey(LoginViewModel.class)
+    abstract ViewModel bindLoginViewModel(LoginViewModel loginViewModel);
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(MainActivityViewModel.class)
+    abstract ViewModel bindMainActivityViewModel(MainActivityViewModel mainActivityViewModel);
+
+    @Binds
+    abstract ViewModelProvider.Factory bindViewModelFactory(DaggerViewModelFactory factory);
+}
