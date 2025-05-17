@@ -1,4 +1,10 @@
+# Android Studio
 *.iml
+.idea/*
+!.idea/codeStyles
+!.idea/runConfigurations
+
+# Gradle
 .gradle
 /local.properties
 /.idea/caches
@@ -7,9 +13,15 @@
 /.idea/workspace.xml
 /.idea/navEditor.xml
 /.idea/assetWizardSettings.xml
+
+# macOS
 .DS_Store
+
+# Build outputs
 /build
 /captures
 .externalNativeBuild
 .cxx
+
+# Others
 local.properties
