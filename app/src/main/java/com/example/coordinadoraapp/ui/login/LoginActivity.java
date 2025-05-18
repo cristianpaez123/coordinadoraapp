@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.coordinadoraapp.MyApplication;
 import com.example.coordinadoraapp.R;
+import com.example.coordinadoraapp.di.DaggerAppComponent;
 import com.example.coordinadoraapp.di.DaggerViewModelFactory;
 import com.example.coordinadoraapp.ui.mainActivity.MainActivity;
 
@@ -27,6 +28,7 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        DaggerAppComponent.builder().build().inject(this);
         super.onCreate(savedInstanceState);
         ((MyApplication) getApplication()).appComponent.inject(this);
 
