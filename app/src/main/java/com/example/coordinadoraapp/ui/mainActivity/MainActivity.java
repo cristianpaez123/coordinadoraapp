@@ -21,12 +21,9 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
-
 import android.Manifest;
-
 import com.example.coordinadoraapp.MyApplication;
 import com.example.coordinadoraapp.R;
-import com.example.coordinadoraapp.di.DaggerAppComponent;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.mlkit.vision.common.InputImage;
 

@@ -36,27 +36,4 @@ public class MainActivityImpl implements MainActivityRepository {
                         .addOnFailureListener(emitter::onError)
         );
     }
-    /*@Inject
-    public MainActivityImpl() {
-        BarcodeScannerOptions options =
-                new BarcodeScannerOptions.Builder()
-                        .setBarcodeFormats(Barcode.FORMAT_QR_CODE)
-                        .build();
-        scanner = BarcodeScanning.getClient(options);
-    }*/
-
-  /*  @Override
-    public Single<String> processImage(InputImage image) {
-        return Single.create(emitter -> {
-            scanner.process(image)
-                    .addOnSuccessListener(barcodes -> {
-                        if (!barcodes.isEmpty()) {
-                            emitter.onSuccess(barcodes.get(0).getRawValue());
-                        } else {
-                            emitter.onError(new Exception("QR no detectado"));
-                        }
-                    })
-                    .addOnFailureListener(emitter::onError);
-        });
-    }*/
 }
