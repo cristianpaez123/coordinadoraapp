@@ -17,6 +17,7 @@ public class LoginActivity extends AppCompatActivity {
 
     @Inject
     ViewModelProvider.Factory viewModelFactory;
+
     private LoginViewModel viewModel;
     private ActivityLoginBinding binding;
 
@@ -24,16 +25,24 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ((MyApplication) getApplication()).appComponent.inject(this);
+        injectDependencies();
+        setupViewBinding();
+        setupViewModel();
+        setupListeners();
+        setupObservers();
+    }
 
+    private void injectDependencies() {
+        ((MyApplication) getApplication()).appComponent.inject(this);
+    }
+
+    private void setupViewBinding() {
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+    }
 
+    private void setupViewModel() {
         viewModel = new ViewModelProvider(this, viewModelFactory).get(LoginViewModel.class);
-
-        setupListeners();
-
-        setupObservers();
     }
 
     private void setupListeners() {
@@ -46,7 +55,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void setupObservers() {
         viewModel.loginSuccess.observe(this, success -> {
-            if (success != null && success) {
+            if (Boolean.TRUE.equals(success)) {
                 startActivity(new Intent(this, MainActivity.class));
                 finish();
             }
