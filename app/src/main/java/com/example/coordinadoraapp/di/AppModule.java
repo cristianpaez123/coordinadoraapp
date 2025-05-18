@@ -1,8 +1,6 @@
 package com.example.coordinadoraapp.di;
 
-import android.app.Application;
 import android.content.Context;
-
 import com.example.coordinadoraapp.data.repository.MainActivityImpl;
 import com.example.coordinadoraapp.domain.mainActivity.MainActivityRepository;
 import com.google.firebase.auth.FirebaseAuth;
@@ -10,10 +8,7 @@ import com.google.mlkit.vision.barcode.BarcodeScanner;
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions;
 import com.google.mlkit.vision.barcode.BarcodeScanning;
 import com.google.mlkit.vision.barcode.common.Barcode;
-
 import javax.inject.Singleton;
-
-import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
 
@@ -43,7 +38,7 @@ public class AppModule {
     BarcodeScanner provideBarcodeScanner() {
         BarcodeScannerOptions options =
                 new BarcodeScannerOptions.Builder()
-                        .setBarcodeFormats(Barcode.FORMAT_QR_CODE) // QR únicamente
+                        .setBarcodeFormats(Barcode.FORMAT_QR_CODE)
                         .build();
         return BarcodeScanning.getClient(options);
     }
