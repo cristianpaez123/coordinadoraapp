@@ -5,6 +5,7 @@ import static android.view.View.VISIBLE;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.StringRes;
@@ -72,20 +73,24 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void loadingState() {
-        binding.loadingOverlay.setVisibility(VISIBLE);
+        showLoadingOverlay(true);
     }
 
     private void successState() {
-        binding.loadingOverlay.setVisibility(GONE);
+        showLoadingOverlay(false);
         startActivity(new Intent(this, MainActivity.class));
         finish();
     }
 
     private void errorState(LoginViewModel.LoginUiState.Error state) {
-        binding.loadingOverlay.setVisibility(GONE);
+        showLoadingOverlay(false);
         String message = state.messageRes != null
             ? getString(state.messageRes)
             : (state.message != null ? state.message : getString(R.string.error_unexpected));
         Snackbar.make(binding.getRoot(), message, Snackbar.LENGTH_LONG).show();
+    }
+
+    private void showLoadingOverlay(boolean show) {
+        binding.includeLoadingOverlay.loadingOverlay.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 }
