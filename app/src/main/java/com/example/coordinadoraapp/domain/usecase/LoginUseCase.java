@@ -1,6 +1,6 @@
 package com.example.coordinadoraapp.domain.usecase;
 
-import com.example.coordinadoraapp.data.repository.AuthRepository;
+import com.example.coordinadoraapp.domain.repository.AuthRepository;
 import com.google.firebase.auth.AuthResult;
 
 import javax.inject.Inject;
