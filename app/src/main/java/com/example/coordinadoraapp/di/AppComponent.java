@@ -8,9 +8,14 @@ import javax.inject.Singleton;
 import dagger.Component;
 
 @Singleton
-@Component(modules = {AppModule.class, FirebaseModule.class}) // ← aquí
+@Component(modules = {
+        AppModule.class,
+        UseCaseModule.class,
+        RepositoryModule.class
+})
 public interface AppComponent {
     void inject(MainActivity mainActivity);
+
     void inject(LoginActivity loginActivity);
 
 }

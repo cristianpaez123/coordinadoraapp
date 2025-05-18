@@ -2,9 +2,7 @@ package com.example.coordinadoraapp.di;
 
 import android.content.Context;
 
-import com.example.coordinadoraapp.data.repository.AuthRepositoryImpl;
-import com.example.coordinadoraapp.domain.repository.AuthRepository;
-import com.example.coordinadoraapp.domain.usecase.LoginUseCase;
+import com.google.firebase.auth.FirebaseAuth;
 
 import javax.inject.Singleton;
 
@@ -27,14 +25,7 @@ public class AppModule {
 
     @Provides
     @Singleton
-    public LoginUseCase provideLoginUseCase(AuthRepositoryImpl authRepository) {
-        return new LoginUseCase(authRepository);
+    FirebaseAuth provideFirebaseAuth() {
+        return FirebaseAuth.getInstance();
     }
-
-    @Provides
-    @Singleton
-    public AuthRepository provideAuthRepository(AuthRepositoryImpl impl) {
-        return impl;
-    }
-
 }
