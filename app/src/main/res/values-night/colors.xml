@@ -11,6 +11,7 @@
     <color name="colorBackground">#121212</color>
     <color name="colorSurface">#1E1E1E</color>
     <color name="colorOnBackground">#FFFFFF</color>
+    <color name="loadingOverlayBackground">#B3FFFFFF</color>
 
     <!-- Error / Accent -->
     <color name="colorError">#FF8A65</color>

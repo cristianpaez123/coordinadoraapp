@@ -15,6 +15,7 @@ import com.example.coordinadoraapp.MyApplication;
 import com.example.coordinadoraapp.R;
 import com.example.coordinadoraapp.databinding.ActivityLoginBinding;
 import com.example.coordinadoraapp.ui.mainActivity.MainActivity;
+import com.google.android.material.snackbar.Snackbar;
 
 import javax.inject.Inject;
 
@@ -71,20 +72,20 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void loadingState() {
-        binding.progressBar.setVisibility(VISIBLE);
+        binding.loadingOverlay.setVisibility(VISIBLE);
     }
 
     private void successState() {
-        binding.progressBar.setVisibility(GONE);
+        binding.loadingOverlay.setVisibility(GONE);
         startActivity(new Intent(this, MainActivity.class));
         finish();
     }
 
     private void errorState(LoginViewModel.LoginUiState.Error state) {
-        binding.progressBar.setVisibility(GONE);
+        binding.loadingOverlay.setVisibility(GONE);
         String message = state.messageRes != null
             ? getString(state.messageRes)
             : (state.message != null ? state.message : getString(R.string.error_unexpected));
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        Snackbar.make(binding.getRoot(), message, Snackbar.LENGTH_LONG).show();
     }
 }
