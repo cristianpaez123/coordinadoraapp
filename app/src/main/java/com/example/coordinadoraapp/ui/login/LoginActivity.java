@@ -1,14 +1,9 @@
 package com.example.coordinadoraapp.ui.login;
 
-import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
-import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 

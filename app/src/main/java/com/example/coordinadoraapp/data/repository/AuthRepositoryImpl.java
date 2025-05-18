@@ -33,4 +33,9 @@ public class AuthRepositoryImpl implements AuthRepository {
         return firebaseAuth.getCurrentUser() != null;
     }
 
+    @Override
+    public void logout() {
+        firebaseAuth.signOut();
+    }
+
 }

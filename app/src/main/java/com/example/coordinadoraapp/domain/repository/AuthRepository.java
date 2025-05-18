@@ -7,4 +7,5 @@ import io.reactivex.rxjava3.core.Single;
 public interface AuthRepository {
     Single<AuthResult> login(String email, String password);
     boolean isUserAuthenticated();
+    void logout();
 }

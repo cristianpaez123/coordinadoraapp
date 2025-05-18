@@ -1,6 +1,7 @@
 package com.example.coordinadoraapp.ui.mainActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.Image;
 import android.os.Bundle;
@@ -9,8 +10,10 @@ import android.view.View;
 import android.widget.ImageView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.OptIn;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.camera.core.CameraSelector;
+import androidx.camera.core.ExperimentalGetImage;
 import androidx.camera.core.ImageAnalysis;
 import androidx.camera.core.Preview;
 import androidx.camera.lifecycle.ProcessCameraProvider;
@@ -24,6 +27,9 @@ import androidx.lifecycle.ViewModelProvider;
 import android.Manifest;
 import com.example.coordinadoraapp.MyApplication;
 import com.example.coordinadoraapp.R;
+import com.example.coordinadoraapp.databinding.ActivityLoginBinding;
+import com.example.coordinadoraapp.databinding.ActivityMainBinding;
+import com.example.coordinadoraapp.ui.login.LoginActivity;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.mlkit.vision.common.InputImage;
 
@@ -37,14 +43,16 @@ public class MainActivity extends AppCompatActivity {
     private ImageView cameraIcon;
     private PreviewView previewView;
 
+    private ActivityMainBinding binding;
 
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        MyApplication.getAppComponent().inject(this);
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.nuevo);
+        MyApplication.getAppComponent().inject(this);
+        setupViewBinding();
+        viewModel = new ViewModelProvider(this, viewModelFactory).get(MainActivityViewModel.class);
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.nuevomain), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -53,22 +61,33 @@ public class MainActivity extends AppCompatActivity {
 
         cameraIcon = findViewById(R.id.cameraIcon);
         previewView = findViewById(R.id.previewView);
-        viewModel = new ViewModelProvider(this, viewModelFactory).get(MainActivityViewModel.class);
 
-        cameraIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(MainActivity.this,
-                            new String[]{Manifest.permission.CAMERA}, 1001);
-                } else {
-                    startCamera();
-                }
+        cameraIcon.setOnClickListener(v -> {
+            if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(MainActivity.this,
+                        new String[]{Manifest.permission.CAMERA}, 1001);
+            } else {
+                startCamera();
+            }
+        });
+
+        binding.btnLogin.setOnClickListener(v -> viewModel.logout());
+
+        viewModel.getLogoutSuccess().observe(this, success -> {
+            if (success != null && success) {
+                startActivity(new Intent(this, LoginActivity.class));
+                finish();
             }
         });
     }
 
+    private void setupViewBinding() {
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+    }
+
+    @OptIn(markerClass = ExperimentalGetImage.class)
     private void startCamera() {
         previewView.setVisibility(View.VISIBLE);
         ListenableFuture<ProcessCameraProvider> cameraProviderFuture = ProcessCameraProvider.getInstance(this);

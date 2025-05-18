@@ -3,6 +3,7 @@ package com.example.coordinadoraapp.di.viewmodel;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.coordinadoraapp.domain.usecase.LogoutUseCase;
 import com.example.coordinadoraapp.ui.login.LoginViewModel;
 import com.example.coordinadoraapp.ui.mainActivity.MainActivityViewModel;
 

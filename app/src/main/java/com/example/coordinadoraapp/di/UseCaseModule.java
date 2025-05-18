@@ -3,6 +3,7 @@ package com.example.coordinadoraapp.di;
 import com.example.coordinadoraapp.domain.repository.AuthRepository;
 import com.example.coordinadoraapp.domain.usecase.CheckAuthUseCase;
 import com.example.coordinadoraapp.domain.usecase.LoginUseCase;
+import com.example.coordinadoraapp.domain.usecase.LogoutUseCase;
 
 import javax.inject.Singleton;
 
@@ -21,5 +22,10 @@ public class UseCaseModule {
     @Singleton
     public CheckAuthUseCase provideCheckAuthUseCase(AuthRepository authRepository) {
         return new CheckAuthUseCase(authRepository);
+    }
+    @Provides
+    @Singleton
+    public LogoutUseCase provideLogoutUseCase(AuthRepository authRepository) {
+        return new LogoutUseCase(authRepository);
     }
 }
