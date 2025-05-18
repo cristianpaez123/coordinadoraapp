@@ -2,6 +2,7 @@ package com.example.coordinadoraapp.di;
 
 import android.app.Application;
 
+import com.example.coordinadoraapp.ui.launcher.LauncherActivity;
 import com.example.coordinadoraapp.ui.mainActivity.MainActivity;
 import com.example.coordinadoraapp.di.viewmodel.ViewModelModule;
 import com.example.coordinadoraapp.ui.login.LoginActivity;
@@ -19,8 +20,9 @@ import dagger.Component;
         ViewModelModule.class
 })
 public interface AppComponent {
-    void inject(MainActivity mainActivity);
-    void inject(LoginActivity loginActivity);
+    void inject(MainActivity activity);
+    void inject(LoginActivity activity);
+    void inject(LauncherActivity activity);
 
     @Component.Builder
     interface Builder {

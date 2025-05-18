@@ -28,4 +28,9 @@ public class AuthRepositoryImpl implements AuthRepository {
         });
     }
 
+    @Override
+    public boolean isUserAuthenticated() {
+        return firebaseAuth.getCurrentUser() != null;
+    }
+
 }
