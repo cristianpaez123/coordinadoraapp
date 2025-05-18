@@ -14,6 +14,10 @@ import com.google.mlkit.vision.common.InputImage;
 
 import javax.inject.Inject;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+
 public class MainActivityViewModel extends ViewModel {
 
     private final MutableLiveData<Boolean> isQrVisible = new MutableLiveData<>(false);
