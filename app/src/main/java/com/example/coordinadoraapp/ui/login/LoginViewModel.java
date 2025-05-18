@@ -1,10 +1,13 @@
 package com.example.coordinadoraapp.ui.login;
 
+import androidx.annotation.StringRes;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.coordinadoraapp.domain.usecase.LoginUseCase;
+import com.example.coordinadoraapp.utils.CredentialValidator;
+import com.example.coordinadoraapp.utils.FirebaseErrorMapper;
 
 import javax.inject.Inject;
 
@@ -26,8 +29,9 @@ public class LoginViewModel extends ViewModel {
     }
 
     public void login(String email, String password) {
-        if (email.isEmpty() || password.isEmpty()) {
-            _uiState.setValue(new LoginUiState.Error("Correo y contraseña son obligatorios"));
+        Integer errorResId = CredentialValidator.validate(email, password);
+        if (errorResId != null) {
+            _uiState.setValue(new LoginUiState.Error(errorResId));
             return;
         }
 
@@ -42,10 +46,8 @@ public class LoginViewModel extends ViewModel {
                         _uiState.setValue(new LoginUiState.Success());
                     },
                     throwable -> {
-                        String message = throwable.getMessage() != null
-                            ? throwable.getMessage()
-                            : "Error desconocido";
-                        _uiState.setValue(new LoginUiState.Error(message));
+                        int messageRes = FirebaseErrorMapper.map(throwable);
+                        _uiState.setValue(new LoginUiState.Error(messageRes));
                     }
                 )
         );
@@ -66,10 +68,18 @@ public class LoginViewModel extends ViewModel {
         }
 
         public static class Error extends LoginUiState {
+            @StringRes
+            public final Integer messageRes;
             public final String message;
+
+            public Error(@StringRes int messageRes) {
+                this.messageRes = messageRes;
+                this.message = null;
+            }
 
             public Error(String message) {
                 this.message = message;
+                this.messageRes = null;
             }
         }
     }

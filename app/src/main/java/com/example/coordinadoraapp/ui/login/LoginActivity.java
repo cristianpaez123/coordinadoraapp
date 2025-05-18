@@ -7,10 +7,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.coordinadoraapp.MyApplication;
+import com.example.coordinadoraapp.R;
 import com.example.coordinadoraapp.databinding.ActivityLoginBinding;
 import com.example.coordinadoraapp.ui.mainActivity.MainActivity;
 
@@ -63,7 +65,7 @@ public class LoginActivity extends AppCompatActivity {
             } else if (state instanceof LoginViewModel.LoginUiState.Success) {
                 successState();
             } else if (state instanceof LoginViewModel.LoginUiState.Error) {
-                errorState(((LoginViewModel.LoginUiState.Error) state).message);
+                errorState((LoginViewModel.LoginUiState.Error) state);
             }
         });
     }
@@ -73,13 +75,16 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void successState() {
-        startActivity(new Intent(this, MainActivity.class));
         binding.progressBar.setVisibility(GONE);
+        startActivity(new Intent(this, MainActivity.class));
         finish();
     }
 
-    private void errorState(String message) {
+    private void errorState(LoginViewModel.LoginUiState.Error state) {
         binding.progressBar.setVisibility(GONE);
+        String message = state.messageRes != null
+            ? getString(state.messageRes)
+            : (state.message != null ? state.message : getString(R.string.error_unexpected));
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }
