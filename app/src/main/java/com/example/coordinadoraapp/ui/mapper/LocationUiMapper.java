@@ -14,12 +14,12 @@ public class LocationUiMapper {
         );
     }
 
-    public static Location toDomain(LocationUi ui) {
+    public static Location toDomain(LocationUi locationUi) {
         return new Location(
-            ui.label,
-            ui.latitude,
-            ui.longitude,
-            ui.observation
+            locationUi.label,
+            locationUi.latitude,
+            locationUi.longitude,
+            locationUi.observation
         );
     }
 }
