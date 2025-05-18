@@ -63,8 +63,7 @@ public class MainActivityViewModel extends ViewModel {
                 validatedData -> {
                     _rawInputUiState.setValue(new RawInputUiState.Success(LocationUiMapper.toUi(validatedData)));
                 },
-                throwable -> {
-                    _rawInputUiState.setValue(new RawInputUiState.Error(throwable.getMessage()));
+                throwable -> {_rawInputUiState.setValue(new RawInputUiState.Error(throwable.getMessage()));
                 }
             ));
     }

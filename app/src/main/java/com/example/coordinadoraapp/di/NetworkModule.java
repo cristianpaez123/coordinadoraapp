@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
 
 import javax.inject.Singleton;
 
@@ -18,4 +19,11 @@ public class NetworkModule {
     public RequestQueue provideRequestQueue(Context context) {
         return Volley.newRequestQueue(context.getApplicationContext());
     }
+
+    @Provides
+    @Singleton
+    public Gson provideGson() {
+        return new Gson();
+    }
+
 }

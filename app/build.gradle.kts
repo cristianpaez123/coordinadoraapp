@@ -62,4 +62,6 @@ dependencies {
     implementation ("androidx.camera:camera-view:1.3.1")
     // volley
     implementation ("com.android.volley:volley:1.2.1")
+    // gson
+    implementation("com.google.code.gson:gson:2.10.1")
 }

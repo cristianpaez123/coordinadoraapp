@@ -4,6 +4,7 @@ import android.util.Base64;
 
 import com.example.coordinadoraapp.data.dto.LocationDto;
 import com.example.coordinadoraapp.data.mapper.QrResponseMapper;
+import com.example.coordinadoraapp.data.payload.EncodedLocationPayload;
 import com.example.coordinadoraapp.data.remote.ApiConstants;
 import com.example.coordinadoraapp.data.remote.RemoteLocationService;
 import com.example.coordinadoraapp.domain.model.Location;
@@ -28,16 +29,11 @@ public class RawInputValidationRepositoryImpl implements RawInputValidationRepos
     @Override
     public Single<Location> submitEncodedData(String rawText) {
         String base64 = Base64.encodeToString(rawText.getBytes(), Base64.NO_WRAP);
-        JSONObject body = new JSONObject();
-        try {
-            body.put("data", "[" + base64 + "]");
-        } catch (JSONException e) {
-            return Single.error(e);
-        }
+        EncodedLocationPayload payload = new EncodedLocationPayload(base64);
 
         String url = ApiConstants.BASE_URL + ApiConstants.VALIDATE_ENDPOINT;
 
-        return remoteLocationService.postJson(url, body)
+        return remoteLocationService.postJson(url, payload)
             .flatMap(response -> {
                 try {
                     LocationDto dto = new LocationDto();
@@ -49,9 +45,10 @@ public class RawInputValidationRepositoryImpl implements RawInputValidationRepos
                     } else {
                         return Single.error(new IllegalArgumentException("Invalid structure: " + dto.data));
                     }
-                } catch (JSONException e) {
+                } catch (Exception e) {
                     return Single.error(e);
                 }
             });
     }
+
 }
