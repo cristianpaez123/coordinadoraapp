@@ -8,7 +8,6 @@ import com.example.coordinadoraapp.R;
 
 public class CredentialValidator {
 
-
     private CredentialValidator() {
         // no instances
     }

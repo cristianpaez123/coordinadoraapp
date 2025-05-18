@@ -17,7 +17,8 @@ import dagger.Component;
         AppModule.class,
         UseCaseModule.class,
         RepositoryModule.class,
-        ViewModelModule.class
+        ViewModelModule.class,
+        NetworkModule.class
 })
 public interface AppComponent {
     void inject(MainActivity activity);

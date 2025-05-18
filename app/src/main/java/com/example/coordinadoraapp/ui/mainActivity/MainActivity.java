@@ -7,6 +7,7 @@ import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ImageView;
 
 import androidx.activity.EdgeToEdge;
@@ -73,6 +74,14 @@ public class MainActivity extends AppCompatActivity {
         });
 
         binding.btnLogin.setOnClickListener(v -> viewModel.logout());
+
+        binding.editText.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                viewModel.submitEncodedText(v.getText().toString());
+                return true;
+            }
+            return false;
+        });
 
         viewModel.getLogoutSuccess().observe(this, success -> {
             if (success != null && success) {

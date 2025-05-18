@@ -1,19 +1,25 @@
 package com.example.coordinadoraapp.di;
 
 import com.example.coordinadoraapp.data.repository.AuthRepositoryImpl;
+import com.example.coordinadoraapp.data.repository.RawInputValidationRepositoryImpl;
 import com.example.coordinadoraapp.domain.repository.AuthRepository;
+import com.example.coordinadoraapp.domain.repository.RawInputValidationRepository;
 
 import javax.inject.Singleton;
 
+import dagger.Binds;
 import dagger.Module;
-import dagger.Provides;
 
 @Module
-public class RepositoryModule {
+public abstract class RepositoryModule {
 
-    @Provides
+    @Binds
     @Singleton
-    public AuthRepository provideAuthRepository(AuthRepositoryImpl impl) {
-        return impl;
-    }
+    public abstract AuthRepository bindAuthRepository(AuthRepositoryImpl impl);
+
+    @Binds
+    @Singleton
+    public abstract RawInputValidationRepository bindRawInputValidationRepository(
+        RawInputValidationRepositoryImpl impl
+    );
 }

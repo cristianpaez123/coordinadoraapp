@@ -9,7 +9,6 @@ import javax.inject.Singleton;
 
 import io.reactivex.rxjava3.core.Single;
 
-@Singleton
 public class AuthRepositoryImpl implements AuthRepository {
 
     private final FirebaseAuth firebaseAuth;
