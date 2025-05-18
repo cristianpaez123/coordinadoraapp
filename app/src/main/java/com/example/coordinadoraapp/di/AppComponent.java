@@ -32,6 +32,8 @@ public interface AppComponent {
 
         Builder appModule(AppModule appModule);
 
+        Builder networkModule(NetworkModule networkModule);
+
         AppComponent build();
     }
 
