@@ -16,7 +16,7 @@ import javax.inject.Inject;
 public class LoginActivity extends AppCompatActivity {
 
     @Inject
-    LoginViewModelFactory factory;
+    ViewModelProvider.Factory viewModelFactory;
     private LoginViewModel viewModel;
     private ActivityLoginBinding binding;
 
@@ -29,7 +29,7 @@ public class LoginActivity extends AppCompatActivity {
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        viewModel = new ViewModelProvider(this, factory).get(LoginViewModel.class);
+        viewModel = new ViewModelProvider(this, viewModelFactory).get(LoginViewModel.class);
 
         setupListeners();
 
