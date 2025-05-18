@@ -7,6 +7,8 @@ import com.google.mlkit.vision.barcode.BarcodeScanning;
 import com.google.mlkit.vision.barcode.common.Barcode;
 import com.google.mlkit.vision.common.InputImage;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import io.reactivex.rxjava3.core.Single;
@@ -21,19 +23,19 @@ public class MainActivityImpl implements MainActivityRepository {
     }
 
     @Override
-    public Single<String> processImage(InputImage image) {
+    public Single<List<Barcode>> processImage(InputImage image) {
         return Single.create(emitter ->
                 barcodeScanner.process(image)
                         .addOnSuccessListener(barcodes -> {
-                            for (Barcode barcode : barcodes) {
-                                if (!emitter.isDisposed()) {
-                                    emitter.onSuccess(barcode.getRawValue());
-                                    return;
-                                }
+                            if (!emitter.isDisposed()) {
+                                emitter.onSuccess(barcodes);
                             }
-                            if (!emitter.isDisposed()) emitter.onError(new Exception("No barcode found"));
                         })
-                        .addOnFailureListener(emitter::onError)
+                        .addOnFailureListener(error -> {
+                            if (!emitter.isDisposed()) {
+                                emitter.onError(error);
+                            }
+                        })
         );
     }
 }

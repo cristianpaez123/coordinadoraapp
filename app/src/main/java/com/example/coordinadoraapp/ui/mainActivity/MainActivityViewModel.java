@@ -4,7 +4,6 @@ import androidx.annotation.StringRes;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-
 import com.example.coordinadoraapp.domain.mainActivity.MainActivityRepository;
 import com.example.coordinadoraapp.domain.usecase.LogoutUseCase;
 import com.example.coordinadoraapp.domain.usecase.ValidateRawInputUseCase;
@@ -15,14 +14,9 @@ import com.google.mlkit.vision.common.InputImage;
 
 import javax.inject.Inject;
 
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.disposables.CompositeDisposable;
-import io.reactivex.rxjava3.schedulers.Schedulers;
-
 public class MainActivityViewModel extends ViewModel {
 
-    private final MutableLiveData<String> qrResult = new MutableLiveData<>();
-    private final MutableLiveData<String> error = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> isQrVisible = new MutableLiveData<>(false);
     private final MutableLiveData<Boolean> logoutSuccess = new MutableLiveData<>();
 
     private final MutableLiveData<RawInputUiState> _rawInputUiState = new MutableLiveData<>();
@@ -34,25 +28,26 @@ public class MainActivityViewModel extends ViewModel {
     private final ValidateRawInputUseCase validateRawInputUseCase;
 
 
+    public LiveData<Boolean> getIsQrVisible() { return isQrVisible; }
+
+    private String lastDetectedQr = null;
+
     @Inject
     public MainActivityViewModel(MainActivityRepository repository, LogoutUseCase logoutUseCase, ValidateRawInputUseCase validateRawInputUseCase) {
         this.repository = repository;
         this.logoutUseCase = logoutUseCase;
         this.validateRawInputUseCase = validateRawInputUseCase;
     }
-
-    public LiveData<String> getQrResult() { return qrResult; }
-    public LiveData<String> getError() { return error; }
     public LiveData<Boolean> getLogoutSuccess() { return logoutSuccess; }
 
-    public void processImage(InputImage image) {
-        disposables.add(repository.processImage(image)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                result -> qrResult.setValue(result),
-                throwable -> error.setValue(throwable.getMessage())
-            ));
+
+    public void onQrVisible(String qrValue) {
+        lastDetectedQr = qrValue;
+        isQrVisible.setValue(true);
+    }
+
+    public void onQrNotVisible() {
+        isQrVisible.setValue(false);
     }
 
     public void submitEncodedText(String rawText) {
@@ -105,3 +100,4 @@ public class MainActivityViewModel extends ViewModel {
         }
     }
 }
+

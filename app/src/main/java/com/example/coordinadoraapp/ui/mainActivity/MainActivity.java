@@ -3,14 +3,13 @@ package com.example.coordinadoraapp.ui.mainActivity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.media.Image;
+import android.graphics.Color;
+import android.graphics.RectF;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ImageView;
-
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.OptIn;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.camera.core.CameraSelector;
@@ -28,11 +27,13 @@ import androidx.lifecycle.ViewModelProvider;
 import android.Manifest;
 import com.example.coordinadoraapp.MyApplication;
 import com.example.coordinadoraapp.R;
+import com.example.coordinadoraapp.domain.mainActivity.MainActivityRepository;
+import com.example.coordinadoraapp.domain.mainActivity.QrAnalyzerUseCase;
+import com.example.coordinadoraapp.utils.QrOverlay;
 import com.example.coordinadoraapp.databinding.ActivityLoginBinding;
 import com.example.coordinadoraapp.databinding.ActivityMainBinding;
 import com.example.coordinadoraapp.ui.login.LoginActivity;
 import com.google.common.util.concurrent.ListenableFuture;
-import com.google.mlkit.vision.common.InputImage;
 
 import javax.inject.Inject;
 
@@ -40,17 +41,23 @@ public class MainActivity extends AppCompatActivity {
 
     @Inject
     ViewModelProvider.Factory viewModelFactory;
+    @Inject
+    MainActivityRepository repository;
+    @Inject
+    QrAnalyzerUseCase qrAnalyzerUseCase;
     private MainActivityViewModel viewModel;
     private ImageView cameraIcon;
     private PreviewView previewView;
+    private boolean guideRectReady = false;
+    private boolean cameraStarted = false;
 
     private ActivityMainBinding binding;
 
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         MyApplication.getAppComponent().inject(this);
+        super.onCreate(savedInstanceState);
         setupViewBinding();
         viewModel = new ViewModelProvider(this, viewModelFactory).get(MainActivityViewModel.class);
 
@@ -62,15 +69,35 @@ public class MainActivity extends AppCompatActivity {
 
         cameraIcon = findViewById(R.id.cameraIcon);
         previewView = findViewById(R.id.previewView);
+        QrOverlay qrOverlay = findViewById(R.id.qrOverlay);
+        viewModel = new ViewModelProvider(this, viewModelFactory).get(MainActivityViewModel.class);
 
-        cameraIcon.setOnClickListener(v -> {
-            if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA)
-                    != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(MainActivity.this,
-                        new String[]{Manifest.permission.CAMERA}, 1001);
-            } else {
+        qrOverlay.post(() -> {
+            RectF guideRect = qrOverlay.getGuideRect();
+            qrAnalyzerUseCase.setGuideRect(guideRect);
+            guideRectReady = true;
+
+            if (cameraStarted) {
                 startCamera();
             }
+        });
+        cameraIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(MainActivity.this,
+                            new String[]{Manifest.permission.CAMERA}, 1001);
+                } else {
+                    cameraStarted = true;
+                    if (guideRectReady) {
+                        startCamera();
+                    }
+                }
+            }
+        });
+        viewModel.getIsQrVisible().observe(this, isVisible -> {
+            qrOverlay.setBorderColor(isVisible ? Color.GREEN : Color.WHITE);
         });
 
         binding.btnLogin.setOnClickListener(v -> viewModel.logout());
@@ -112,17 +139,7 @@ public class MainActivity extends AppCompatActivity {
                         .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                         .build();
 
-                imageAnalysis.setAnalyzer(ContextCompat.getMainExecutor(this), imageProxy -> {
-                    Image mediaImage = imageProxy.getImage();
-                    if (mediaImage != null) {
-                        InputImage image = InputImage.fromMediaImage(
-                                mediaImage,
-                                imageProxy.getImageInfo().getRotationDegrees()
-                        );
-                        viewModel.processImage(image);
-                    }
-                    imageProxy.close();
-                });
+                imageAnalysis.setAnalyzer(ContextCompat.getMainExecutor(this), qrAnalyzerUseCase);
 
                 CameraSelector cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA;
 
@@ -132,5 +149,11 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("CameraX", "Error: " + e.getMessage());
             }
         }, ContextCompat.getMainExecutor(this));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        qrAnalyzerUseCase.clear();
     }
 }

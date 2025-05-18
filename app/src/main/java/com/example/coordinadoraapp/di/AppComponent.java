@@ -1,7 +1,6 @@
 package com.example.coordinadoraapp.di;
 
 import android.app.Application;
-
 import com.example.coordinadoraapp.ui.launcher.LauncherActivity;
 import com.example.coordinadoraapp.ui.mainActivity.MainActivity;
 import com.example.coordinadoraapp.di.viewmodel.ViewModelModule;
