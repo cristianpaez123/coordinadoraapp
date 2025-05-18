@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.coordinadoraapp.domain.usecase.LoginUseCase;
-import com.google.firebase.auth.AuthResult;
 
 import javax.inject.Inject;
 
@@ -18,11 +17,8 @@ public class LoginViewModel extends ViewModel {
     private final LoginUseCase loginUseCase;
     private final CompositeDisposable disposables = new CompositeDisposable();
 
-    private final MutableLiveData<Boolean> _loginSuccess = new MutableLiveData<>();
-    public LiveData<Boolean> loginSuccess = _loginSuccess;
-
-    private final MutableLiveData<String> _error = new MutableLiveData<>();
-    public LiveData<String> error = _error;
+    private final MutableLiveData<LoginUiState> _uiState = new MutableLiveData<>();
+    public final LiveData<LoginUiState> uiState = _uiState;
 
     @Inject
     public LoginViewModel(LoginUseCase loginUseCase) {
@@ -30,20 +26,52 @@ public class LoginViewModel extends ViewModel {
     }
 
     public void login(String email, String password) {
+        if (email.isEmpty() || password.isEmpty()) {
+            _uiState.setValue(new LoginUiState.Error("Correo y contraseña son obligatorios"));
+            return;
+        }
+
+        _uiState.setValue(new LoginUiState.Loading());
+
         disposables.add(
-                loginUseCase.execute(email, password)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(
-                                authResult -> _loginSuccess.setValue(true),
-                                throwable -> _error.setValue(throwable.getMessage())
-                        )
+            loginUseCase.execute(email, password)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    authResult -> {
+                        _uiState.setValue(new LoginUiState.Success());
+                    },
+                    throwable -> {
+                        String message = throwable.getMessage() != null
+                            ? throwable.getMessage()
+                            : "Error desconocido";
+                        _uiState.setValue(new LoginUiState.Error(message));
+                    }
+                )
         );
+
     }
 
     @Override
     protected void onCleared() {
-        super.onCleared();
         disposables.clear();
+        super.onCleared();
+    }
+
+    public static abstract class LoginUiState {
+        public static class Loading extends LoginUiState {
+        }
+
+        public static class Success extends LoginUiState {
+        }
+
+        public static class Error extends LoginUiState {
+            public final String message;
+
+            public Error(String message) {
+                this.message = message;
+            }
+        }
     }
 }
+

@@ -1,5 +1,8 @@
 package com.example.coordinadoraapp.ui.login;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -24,7 +27,6 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         injectDependencies();
         setupViewBinding();
         setupViewModel();
@@ -54,17 +56,30 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void setupObservers() {
-        viewModel.loginSuccess.observe(this, success -> {
-            if (Boolean.TRUE.equals(success)) {
-                startActivity(new Intent(this, MainActivity.class));
-                finish();
+        viewModel.uiState.observe(this, state -> {
+            loadingState();
+            if (state instanceof LoginViewModel.LoginUiState.Loading) {
+                loadingState();
+            } else if (state instanceof LoginViewModel.LoginUiState.Success) {
+                successState();
+            } else if (state instanceof LoginViewModel.LoginUiState.Error) {
+                errorState(((LoginViewModel.LoginUiState.Error) state).message);
             }
         });
+    }
 
-        viewModel.error.observe(this, error -> {
-            if (error != null && !error.isEmpty()) {
-                Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
-            }
-        });
+    private void loadingState() {
+        binding.progressBar.setVisibility(VISIBLE);
+    }
+
+    private void successState() {
+        startActivity(new Intent(this, MainActivity.class));
+        binding.progressBar.setVisibility(GONE);
+        finish();
+    }
+
+    private void errorState(String message) {
+        binding.progressBar.setVisibility(GONE);
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }
