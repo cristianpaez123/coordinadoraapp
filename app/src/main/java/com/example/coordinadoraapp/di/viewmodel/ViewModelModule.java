@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.coordinadoraapp.ui.login.LoginViewModel;
+import com.example.coordinadoraapp.ui.mainActivity.MainActivityViewModel;
 
 import dagger.Binds;
 import dagger.Module;
@@ -16,6 +17,11 @@ public abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(LoginViewModel.class)
     abstract ViewModel bindLoginViewModel(LoginViewModel viewModel);
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(MainActivityViewModel.class)
+    abstract ViewModel bindMainActivityViewModel(MainActivityViewModel mainActivityViewModel);
 
     @Binds
     abstract ViewModelProvider.Factory bindViewModelFactory(ViewModelFactory factory);

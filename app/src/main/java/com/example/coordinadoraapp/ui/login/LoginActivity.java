@@ -12,7 +12,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.coordinadoraapp.MyApplication;
 import com.example.coordinadoraapp.databinding.ActivityLoginBinding;
-import com.example.coordinadoraapp.ui.MainActivity;
+import com.example.coordinadoraapp.ui.mainActivity.MainActivity;
 
 import javax.inject.Inject;
 
