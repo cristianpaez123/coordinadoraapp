@@ -1,7 +1,33 @@
 # 📱 Coordinadora
 
+
+## ⚡ App Distribution
+
+🔗 **Acceso a la app para pruebas**  
+La aplicación está disponible para testers mediante **Firebase App Distribution**.  
+Utiliza el siguiente enlace para descargar e instalar la última versión de la app:
+
+👉 [**Instalar desde Firebase App Distribution**](https://appdistribution.firebase.dev/i/476d9f65ce40aa55)
+
+> Asegúrate de haber iniciado sesión con uno de los correos de prueba autorizados antes de acceder al enlace.
+
+---
+
+## 👥 Usuarios de Prueba
+
+Para acceder a la aplicación, puedes utilizar uno de los siguientes usuarios de prueba registrados en **Firebase Authentication**:
+
+| Correo electrónico           | Contraseña |
+|------------------------------|------------|
+| oscart@coordinadora.com      | 123456     |
+| sdhajan@coordinadora.com     | 123456     |
+| camilov@coordinadora.com     | 123456     |
+
+
+
 ## 📝 Descripción del Problema
 Esta aplicación Android está diseñada para facilitar la lectura y procesamiento de códigos QR que contienen coordenadas geográficas (latitud y longitud). Al escanear un código QR, la app extrae la ubicación codificada y:
+
 
 Funcionalidad principal:
 ---
@@ -169,7 +195,14 @@ com.example.coordinadoraapp
 - 🔐 **Validación de seguridad**: Se pueden añadir validaciones más estrictas sobre los datos escaneados del QR para evitar coordenadas inválidas o manipuladas.
 
 ---
+## Test
 
+Vinculo de invitacion App distribution
+https://appdistribution.firebase.dev/i/476d9f65ce40aa55
+
+
+
+---
 ## 👤 Autor
 
 Nombre: Cristian Paez
