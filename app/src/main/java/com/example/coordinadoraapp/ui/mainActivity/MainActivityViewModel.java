@@ -31,7 +31,8 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class MainActivityViewModel extends ViewModel {
 
-    private final MutableLiveData<Boolean> isQrVisible = new MutableLiveData<>(false);
+    private final MutableLiveData<Boolean> _isQrVisible = new MutableLiveData<>(false);
+    public LiveData<Boolean> isQrVisible = _isQrVisible;
 
     private final QrAnalyzerUC analyzer;
     private final StartQrScannerUseCase startScannerUseCase;
@@ -41,16 +42,15 @@ public class MainActivityViewModel extends ViewModel {
     private final MutableLiveData<RawInputUiState> _rawInputUiState = new MutableLiveData<>();
     public final LiveData<RawInputUiState> rawInputUiState = _rawInputUiState;
 
+    private final MutableLiveData<Boolean> _stopCamera = new MutableLiveData<>();
+    public LiveData<Boolean> stopCamera = _stopCamera;
+
     private final MutableLiveData<LocationsUiState> _locationsState = new MutableLiveData<>();
     public final LiveData<LocationsUiState> locationsState = _locationsState;
 
     private final CompositeDisposable disposables = new CompositeDisposable();
     private final LogoutUseCase logoutUseCase;
     private final ValidateRawInputUseCase validateRawInputUseCase;
-
-    public LiveData<Boolean> getIsQrVisible() {
-        return isQrVisible;
-    }
 
     @Inject
     public MainActivityViewModel(
@@ -77,13 +77,13 @@ public class MainActivityViewModel extends ViewModel {
         analyzer.setListener(new QrResultListener() {
             @Override
             public void onQrDetected(String value) {
-                isQrVisible.postValue(true);
-                Log.d("QR_VALUE", "QR detectado: " + value);
+                _isQrVisible.postValue(true);
+                _stopCamera.postValue(true);
             }
 
             @Override
             public void onQrNotDetected() {
-                isQrVisible.postValue(false);
+                _isQrVisible.postValue(false);
             }
         });
         startScannerUseCase.execute(context, lifecycleOwner, previewView, analyzer);
@@ -135,7 +135,13 @@ public class MainActivityViewModel extends ViewModel {
         super.onCleared();
         disposables.clear();
     }
+    public void stopCamera() {
+        startScannerUseCase.stopCamera();
+    }
     public void stopQrScanner() {
         analyzer.clear();
+    }
+    public void resetStopCameraFlag() {
+        _stopCamera.setValue(false);
     }
 }

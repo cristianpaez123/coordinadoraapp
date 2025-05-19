@@ -3,7 +3,6 @@ package com.example.coordinadoraapp.domain.mainActivity;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.media.Image;
-import android.util.Log;
 
 import androidx.camera.core.ImageAnalysis;
 import androidx.camera.core.ImageProxy;

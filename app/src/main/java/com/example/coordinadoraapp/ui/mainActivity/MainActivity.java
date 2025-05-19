@@ -132,8 +132,16 @@ public class MainActivity extends AppCompatActivity implements LocationAdapter.O
     }
 
     private void observeViewModel() {
-        viewModel.getIsQrVisible().observe(this, isVisible -> {
+        viewModel.isQrVisible.observe(this, isVisible -> {
             qrOverlay.setBorderColor(isVisible ? Color.GREEN : Color.WHITE);
+        });
+
+        viewModel.stopCamera.observe(this, stop -> {
+            if (stop != null && stop) {
+                viewModel.stopCamera(); // ← detiene CameraX desde el UseCase
+                binding.previewView.setVisibility(View.GONE);
+                viewModel.resetStopCameraFlag(); // ← limpia el LiveData
+            }
         });
 
         viewModel.getLogoutSuccess().observe(this, success -> {

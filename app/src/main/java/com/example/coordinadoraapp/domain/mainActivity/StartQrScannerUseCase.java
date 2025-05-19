@@ -15,6 +15,8 @@ import com.google.common.util.concurrent.ListenableFuture;
 
 public class StartQrScannerUseCase {
 
+    private ProcessCameraProvider cameraProvider;
+
     public void execute(
             Context context,
             LifecycleOwner lifecycleOwner,
@@ -25,6 +27,7 @@ public class StartQrScannerUseCase {
 
         cameraProviderFuture.addListener(() -> {
             try {
+                cameraProvider = cameraProviderFuture.get();
                 ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
 
                 Preview preview = new Preview.Builder().build();
@@ -45,5 +48,10 @@ public class StartQrScannerUseCase {
                 Log.e("StartCamera", "Error iniciando cámara", e);
             }
         }, ContextCompat.getMainExecutor(context));
+    }
+    public void stopCamera() {
+        if (cameraProvider != null) {
+            cameraProvider.unbindAll();
+        }
     }
 }
