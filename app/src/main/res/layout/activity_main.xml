@@ -19,12 +19,19 @@
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnLogin"
-                style="@style/RoundedBlueButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="20dp"
                 android:text="@string/logout_button_text"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp"
+                android:backgroundTint="?attr/colorPrimary"
+                android:insetTop="8dp"
+                android:insetBottom="8dp"
+                app:cornerRadius="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -65,6 +72,7 @@
                 android:text="@string/read_info_title"
                 android:textColor="@color/colorPrimary"
                 android:textStyle="bold"
+                android:textSize="30sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/previewView" />
