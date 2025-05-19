@@ -3,10 +3,8 @@ package com.example.coordinadoraapp.di.viewmodel;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.coordinadoraapp.domain.usecase.LogoutUseCase;
 import com.example.coordinadoraapp.ui.Map.MapViewModel;
 import com.example.coordinadoraapp.ui.login.LoginViewModel;
-import com.example.coordinadoraapp.ui.mainActivity.MainActivityViewModel;
 import com.example.coordinadoraapp.ui.mainActivity.viewmodel.QrScannerViewModel;
 import com.example.coordinadoraapp.ui.mainActivity.viewmodel.RawInputViewModel;
 import com.example.coordinadoraapp.ui.mainActivity.viewmodel.SessionViewModel;
@@ -22,11 +20,6 @@ public abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(LoginViewModel.class)
     abstract ViewModel bindLoginViewModel(LoginViewModel viewModel);
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(MainActivityViewModel.class)
-    abstract ViewModel bindMainActivityViewModel(MainActivityViewModel viewModel);
 
     @Binds
     @IntoMap
