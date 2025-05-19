@@ -2,6 +2,7 @@ package com.example.coordinadoraapp.di;
 
 import android.app.Application;
 
+import com.example.coordinadoraapp.ui.Map.MapFragment;
 import com.example.coordinadoraapp.MyApplication;
 import com.example.coordinadoraapp.ui.launcher.LauncherActivity;
 import com.example.coordinadoraapp.ui.mainActivity.MainActivity;
@@ -26,6 +27,7 @@ public interface AppComponent {
     void inject(MainActivity activity);
     void inject(LoginActivity activity);
     void inject(LauncherActivity activity);
+    void inject(MapFragment mapFragment);
 
     @Component.Builder
     interface Builder {

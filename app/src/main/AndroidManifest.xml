@@ -8,6 +8,7 @@
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:name=".MyApplication"
@@ -20,6 +21,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CoordinadoraApp"
         tools:targetApi="31">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyANinpOeQVYvwLI9xeX-CgaOpSBstzud0w" />
 
         <activity
             android:name=".ui.launcher.LauncherActivity"

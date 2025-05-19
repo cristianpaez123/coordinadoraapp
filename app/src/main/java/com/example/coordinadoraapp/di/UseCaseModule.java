@@ -4,6 +4,7 @@ import com.example.coordinadoraapp.domain.mainActivity.MainActivityRepository;
 import com.example.coordinadoraapp.domain.mainActivity.QrAnalyzerUC;
 import com.example.coordinadoraapp.domain.mainActivity.StartQrScannerUseCase;
 import com.example.coordinadoraapp.domain.repository.AuthRepository;
+import com.example.coordinadoraapp.domain.usecase.GetMapPolylineUseCase;
 import com.example.coordinadoraapp.domain.usecase.LoginUseCase;
 import com.example.coordinadoraapp.ui.mainActivity.MainActivityViewModel;
 import javax.inject.Singleton;
@@ -28,5 +29,10 @@ public class UseCaseModule {
     @Singleton
     StartQrScannerUseCase provideStartQrScannerUseCase() {
         return new StartQrScannerUseCase();
+    }
+
+    @Provides
+    GetMapPolylineUseCase provideGetMapPolylineUseCase() {
+        return new GetMapPolylineUseCase();
     }
 }

@@ -25,6 +25,7 @@ import com.example.coordinadoraapp.MyApplication;
 import com.example.coordinadoraapp.R;
 import com.example.coordinadoraapp.databinding.ActivityMainBinding;
 import com.example.coordinadoraapp.domain.mainActivity.MainActivityRepository;
+import com.example.coordinadoraapp.ui.Map.MapFragment;
 import com.example.coordinadoraapp.sync.LocationSyncManager;
 import com.example.coordinadoraapp.ui.login.LoginActivity;
 import com.example.coordinadoraapp.ui.mainActivity.adapter.LocationAdapter;
@@ -38,7 +39,7 @@ import javax.inject.Inject;
 
 import io.reactivex.rxjava3.annotations.NonNull;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LocationAdapter.OnMapClickListener {
 
     @Inject
     ViewModelProvider.Factory viewModelFactory;
@@ -56,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
 
-    LocationAdapter adapter = new LocationAdapter();
+    LocationAdapter adapter = new LocationAdapter(this);
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -115,6 +116,21 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void openMapFragment(String latitude, String longitude) {
+        MapFragment fragment = new MapFragment();
+
+        Bundle args = new Bundle();
+        args.putString("lat", latitude);
+        args.putString("lng", longitude);
+        fragment.setArguments(args);
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
     private void observeViewModel() {
         viewModel.getIsQrVisible().observe(this, isVisible -> {
             qrOverlay.setBorderColor(isVisible ? Color.GREEN : Color.WHITE);
@@ -142,6 +158,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -173,5 +190,10 @@ public class MainActivity extends AppCompatActivity {
             btnCloseCamera.setVisibility(View.GONE);
             viewModel.stopQrScanner();
         });
+    }
+
+    @Override
+    public void onMapClick(String latitude, String longitude) {
+        openMapFragment(latitude, longitude);
     }
 }
