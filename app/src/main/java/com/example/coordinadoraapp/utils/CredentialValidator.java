@@ -1,10 +1,10 @@
 package com.example.coordinadoraapp.utils;
 
-import android.util.Patterns;
-
 import androidx.annotation.StringRes;
 
 import com.example.coordinadoraapp.R;
+
+import java.util.regex.Pattern;
 
 public class CredentialValidator {
 
@@ -12,13 +12,17 @@ public class CredentialValidator {
         // no instances
     }
 
+    private static final Pattern EMAIL_PATTERN = Pattern.compile(
+        "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}"
+    );
+
     @StringRes
     public static Integer validate(String email, String password) {
         if (email == null || email.trim().isEmpty()) {
             return R.string.error_email_required;
         }
 
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+        if (!EMAIL_PATTERN.matcher(email).matches()) {
             return R.string.error_email_invalid;
         }
 

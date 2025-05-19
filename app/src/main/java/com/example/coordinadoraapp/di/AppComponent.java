@@ -20,7 +20,8 @@ import dagger.Component;
         UseCaseModule.class,
         RepositoryModule.class,
         ViewModelModule.class,
-        NetworkModule.class
+        NetworkModule.class,
+        SchedulerModule.class
 })
 public interface AppComponent {
     void inject(MyApplication application);

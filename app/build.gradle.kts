@@ -69,5 +69,17 @@ dependencies {
     implementation ("com.google.android.gms:play-services-maps:18.2.0")
     implementation ("com.google.android.gms:play-services-location:21.0.1")
 
+    //unit test
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.mockito:mockito-core:5.2.0")
+    testImplementation("org.mockito:mockito-inline:5.2.0")
+    testImplementation("org.mockito:mockito-junit-jupiter:5.2.0")
+    testImplementation("androidx.arch.core:core-testing:2.2.0")
+    testImplementation("io.reactivex.rxjava3:rxjava:3.1.5")
+    testImplementation("io.reactivex.rxjava3:rxandroid:3.0.2")
+    testImplementation("org.robolectric:robolectric:4.10.3")
+}
 
+tasks.withType<Test> {
+    jvmArgs("-Dnet.bytebuddy.experimental=true")
 }
