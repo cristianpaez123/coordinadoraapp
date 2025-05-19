@@ -128,5 +128,7 @@ public class MainActivityViewModel extends ViewModel {
         super.onCleared();
         disposables.clear();
     }
-
+    public void stopQrScanner() {
+        analyzer.clear();
+    }
 }
