@@ -86,6 +86,7 @@ tasks.withType<Test> {
 }
 
 firebaseAppDistribution {
+    appId = "1:718347440367:android:fc67b50615af1d3ddd0b1a"
     artifactType = "APK"
     releaseNotes = "Build automático desde GitHub Actions"
     serviceCredentialsFile = project.findProperty("firebaseServiceCredentials") as String? ?: ""
