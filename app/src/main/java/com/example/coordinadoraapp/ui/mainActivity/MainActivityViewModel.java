@@ -120,8 +120,13 @@ public class MainActivityViewModel extends ViewModel {
     }
 
     public void logout() {
-        logoutUseCase.execute();
-        logoutSuccess.setValue(true);
+        disposables.add(
+            logoutUseCase.execute()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(() -> logoutSuccess.setValue(true),
+                    throwable -> {/* log error */})
+        );
     }
 
     @Override

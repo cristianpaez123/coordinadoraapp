@@ -30,5 +30,9 @@ public class LocationRepositoryImpl implements LocationRepository {
         return localDataSource.getAll();
     }
 
-}
+    @Override
+    public Completable clearAllLocations() {
+        return localDataSource.clearAll();
+    }
 
+}

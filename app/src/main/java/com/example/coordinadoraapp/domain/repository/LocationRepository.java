@@ -10,5 +10,6 @@ import io.reactivex.rxjava3.core.Single;
 public interface LocationRepository {
     Completable saveLocation(Location location);
     Single<List<Location>> getAllLocations();
+    Completable clearAllLocations();
 }
 

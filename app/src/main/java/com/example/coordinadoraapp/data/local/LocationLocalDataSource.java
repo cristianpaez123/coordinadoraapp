@@ -77,4 +77,13 @@ public class LocationLocalDataSource {
             return locations;
         });
     }
+
+    public Completable clearAll() {
+        return Completable.fromAction(() -> {
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            db.delete(LocationDbHelper.TABLE_NAME, null, null);
+            db.close();
+        });
+    }
+
 }
