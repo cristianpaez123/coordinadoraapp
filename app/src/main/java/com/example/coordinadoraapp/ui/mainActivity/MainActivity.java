@@ -5,27 +5,32 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.RectF;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.camera.view.PreviewView;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 import android.Manifest;
+import android.widget.Toast;
 import com.example.coordinadoraapp.MyApplication;
 import com.example.coordinadoraapp.R;
 import com.example.coordinadoraapp.domain.mainActivity.MainActivityRepository;
+import com.example.coordinadoraapp.utils.CameraPermissionHelper;
 import com.example.coordinadoraapp.utils.QrOverlay;
 import com.example.coordinadoraapp.databinding.ActivityLoginBinding;
 import com.example.coordinadoraapp.databinding.ActivityMainBinding;
 import com.example.coordinadoraapp.ui.login.LoginActivity;
 
 import javax.inject.Inject;
+
+import io.reactivex.rxjava3.annotations.NonNull;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -36,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private MainActivityViewModel viewModel;
     private ImageView cameraIcon;
     private PreviewView previewView;
+    private QrOverlay qrOverlay;
 
     private ActivityMainBinding binding;
 
@@ -54,23 +60,22 @@ public class MainActivity extends AppCompatActivity {
         });
         cameraIcon = findViewById(R.id.cameraIcon);
         previewView = findViewById(R.id.previewView);
-        QrOverlay qrOverlay = findViewById(R.id.qrOverlay);
+        qrOverlay = findViewById(R.id.qrOverlay);
 
         cameraIcon.setOnClickListener(v -> {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-                    != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.CAMERA}, 1001);
+            if (CameraPermissionHelper.hasCameraPermission(this)) {
+                startScannerAfterLayout();
             } else {
-                qrOverlay.post(() -> {
-                    RectF guideRect = qrOverlay.getGuideRect();
-                    viewModel.initQrScanner(this, this, previewView, guideRect);
-                });
+                if (CameraPermissionHelper.shouldShowRationale(this)) {
+                }
+                CameraPermissionHelper.requestCameraPermission(this);
             }
         });
         viewModel.getIsQrVisible().observe(this, isVisible -> {
             qrOverlay.setBorderColor(isVisible ? Color.GREEN : Color.WHITE);
         });
+
+
 
         binding.btnLogin.setOnClickListener(v -> viewModel.logout());
 
@@ -88,6 +93,37 @@ public class MainActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    private void startScannerAfterLayout() {
+        qrOverlay.post(() -> {
+            RectF guideRect = qrOverlay.getGuideRect();
+            viewModel.initQrScanner(this, this, previewView, guideRect);
+        });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == CameraPermissionHelper.REQUEST_CODE_CAMERA) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startScannerAfterLayout();
+            } else {
+                if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)) {
+                    openAppSettings();
+                } else {
+                    Toast.makeText(this, "Permiso de cámara requerido para escanear", Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+    }
+
+    private void openAppSettings() {
+        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        Uri uri = Uri.fromParts("package", getPackageName(), null);
+        intent.setData(uri);
+        startActivity(intent);
     }
 
     private void setupViewBinding() {
