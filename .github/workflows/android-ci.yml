@@ -1,12 +1,38 @@
-name: Test Firebase Secret Access
+name: Android CI/CD
 
 on:
-  workflow_dispatch:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
-  test-firebase-secret:
+  build-test-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 🔐 Verifica acceso al secret FIREBASE_CREDENTIALS
-        run: echo "${{ secrets.FIREBASE_CREDENTIALS }}" | head -c 100
+      - name: 📦 Checkout project
+        uses: actions/checkout@v3
+
+      - name: ☕ Setup JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'  # o la versión que uses
+
+      - name: ⚙️ Setup Gradle
+        uses: gradle/gradle-build-action@v2
+
+      - name: 🔐 Decode Firebase credentials
+        run: echo "${{ secrets.FIREBASE_CREDENTIALS }}" > service-account.json
+
+      - name: 🧪 Run unit tests
+        run: ./gradlew test
+
+      - name: 🧱 Build debug APK
+        run: ./gradlew assembleDebug
+
+      - name: 🚀 Upload to Firebase App Distribution
+        run: ./gradlew appDistributionUploadDebug \
+          -PfirebaseServiceCredentials=service-account.json \
+          -PfirebaseTesters=${{ secrets.FIREBASE_TESTERS }}
