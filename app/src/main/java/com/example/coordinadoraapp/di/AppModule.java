@@ -1,6 +1,8 @@
 package com.example.coordinadoraapp.di;
 
 import android.content.Context;
+
+import com.example.coordinadoraapp.data.local.LocationLocalDataSource;
 import com.example.coordinadoraapp.data.repository.MainActivityImpl;
 import com.example.coordinadoraapp.domain.mainActivity.MainActivityRepository;
 import com.google.firebase.auth.FirebaseAuth;
@@ -46,5 +48,11 @@ public class AppModule {
     @Provides
     MainActivityRepository provideMainActivityRepository(BarcodeScanner scanner) {
         return new MainActivityImpl(scanner);
+    }
+
+    @Provides
+    @Singleton
+    public LocationLocalDataSource provideLocalDataSource(Context context) {
+        return new LocationLocalDataSource(context);
     }
 }

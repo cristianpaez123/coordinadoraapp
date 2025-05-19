@@ -1,8 +1,10 @@
 package com.example.coordinadoraapp.di;
 
 import com.example.coordinadoraapp.data.repository.AuthRepositoryImpl;
+import com.example.coordinadoraapp.data.repository.LocationRepositoryImpl;
 import com.example.coordinadoraapp.data.repository.RawInputValidationRepositoryImpl;
 import com.example.coordinadoraapp.domain.repository.AuthRepository;
+import com.example.coordinadoraapp.domain.repository.LocationRepository;
 import com.example.coordinadoraapp.domain.repository.RawInputValidationRepository;
 
 import javax.inject.Singleton;
@@ -21,5 +23,11 @@ public abstract class RepositoryModule {
     @Singleton
     public abstract RawInputValidationRepository bindRawInputValidationRepository(
         RawInputValidationRepositoryImpl impl
+    );
+
+    @Binds
+    @Singleton
+    public abstract LocationRepository bindLocationRepository(
+        LocationRepositoryImpl impl
     );
 }
