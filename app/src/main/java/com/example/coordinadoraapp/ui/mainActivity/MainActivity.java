@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.coordinadoraapp.MyApplication;
 import com.example.coordinadoraapp.R;
 import com.example.coordinadoraapp.databinding.ActivityMainBinding;
+import com.example.coordinadoraapp.domain.QrResultListener;
 import com.example.coordinadoraapp.domain.repository.MainRepository;
 import com.example.coordinadoraapp.ui.Map.MapFragment;
 import com.example.coordinadoraapp.sync.LocationSyncManager;
@@ -31,6 +32,9 @@ import com.example.coordinadoraapp.ui.login.LoginActivity;
 import com.example.coordinadoraapp.ui.mainActivity.adapter.LocationAdapter;
 import com.example.coordinadoraapp.ui.mainActivity.state.LocationsUiState;
 import com.example.coordinadoraapp.ui.mainActivity.state.RawInputUiState;
+import com.example.coordinadoraapp.ui.mainActivity.viewmodel.QrScannerViewModel;
+import com.example.coordinadoraapp.ui.mainActivity.viewmodel.RawInputViewModel;
+import com.example.coordinadoraapp.ui.mainActivity.viewmodel.SessionViewModel;
 import com.example.coordinadoraapp.ui.model.LocationUi;
 import com.example.coordinadoraapp.utils.CameraPermissionManager;
 import com.example.coordinadoraapp.utils.QrOverlay;
@@ -47,7 +51,11 @@ public class MainActivity extends AppCompatActivity implements LocationAdapter.O
     LocationSyncManager locationSyncManager;
     @Inject
     MainRepository repository;
-    private MainActivityViewModel viewModel;
+
+    private QrScannerViewModel qrScannerViewModel;
+    private RawInputViewModel rawInputViewModel;
+    private SessionViewModel sessionViewModel;
+
     private ImageView cameraIcon;
     private PreviewView previewView;
     private ImageView btnCloseCamera;
@@ -64,16 +72,22 @@ public class MainActivity extends AppCompatActivity implements LocationAdapter.O
     protected void onCreate(Bundle savedInstanceState) {
         MyApplication.getAppComponent().inject(this);
         super.onCreate(savedInstanceState);
-        viewModel = new ViewModelProvider(this, viewModelFactory).get(MainActivityViewModel.class);
+
+        qrScannerViewModel = new ViewModelProvider(this, viewModelFactory).get(QrScannerViewModel.class);
+        rawInputViewModel = new ViewModelProvider(this, viewModelFactory).get(RawInputViewModel.class);
+        sessionViewModel = new ViewModelProvider(this, viewModelFactory).get(SessionViewModel.class);
+
         permissionManager = new CameraPermissionManager(this, REQUEST_CODE_CAMERA);
+
         setupViewBinding();
         ViewCompat.setOnApplyWindowInsetsListener(binding.activityLayout, (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
         setupUI();
-        observeViewModel();
+        observeViewModels();
         closeCamera();
     }
 
@@ -89,22 +103,19 @@ public class MainActivity extends AppCompatActivity implements LocationAdapter.O
         btnCloseCamera = findViewById(R.id.btnCloseCamera);
 
         cameraIcon.setOnClickListener(v -> handleCameraPermission());
-
-        binding.btnLogin.setOnClickListener(v -> viewModel.logout());
+        binding.btnLogin.setOnClickListener(v -> sessionViewModel.logout());
 
         binding.editText.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                viewModel.submitEncodedText(v.getText().toString());
+                rawInputViewModel.submit(v.getText().toString());
                 return true;
             }
             return false;
         });
 
-        binding.btnConfirm.setOnClickListener(v -> viewModel.submitEncodedText( binding.editText.getText().toString()));
-
+        binding.btnConfirm.setOnClickListener(v -> rawInputViewModel.submit(binding.editText.getText().toString()));
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
         binding.recyclerView.setAdapter(adapter);
-
     }
 
     private void handleCameraPermission() {
@@ -118,62 +129,71 @@ public class MainActivity extends AppCompatActivity implements LocationAdapter.O
         }
     }
 
-    private void openMapFragment(String latitude, String longitude) {
-        MapFragment fragment = new MapFragment();
+    private void showCamera() {
+        previewView.setVisibility(View.VISIBLE);
+        btnCloseCamera.setVisibility(View.VISIBLE);
+        qrOverlay.post(() -> {
+            RectF guideRect = qrOverlay.getGuideRect();
+            qrScannerViewModel.initQrScanner(this, this, previewView, guideRect, new QrResultListener() {
+                @Override
+                public void onQrDetected(String value) {
+                    rawInputViewModel.submit(value);
+                    qrScannerViewModel.notifyQrVisible(true);
+                    qrScannerViewModel.triggerStopCamera();
+                }
 
-        Bundle args = new Bundle();
-        args.putString("lat", latitude);
-        args.putString("lng", longitude);
-        fragment.setArguments(args);
-
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragment_container, fragment)
-                .addToBackStack(null)
-                .commit();
+                @Override
+                public void onQrNotDetected() {
+                    qrScannerViewModel.notifyQrVisible(false);
+                }
+            });
+        });
     }
 
-    private void observeViewModel() {
-        viewModel.isQrVisible.observe(this, isVisible -> {
-            qrOverlay.setBorderColor(isVisible ? Color.GREEN : Color.WHITE);
+    private void closeCamera() {
+        btnCloseCamera.setOnClickListener(v -> {
+            previewView.setVisibility(View.GONE);
+            btnCloseCamera.setVisibility(View.GONE);
+            qrScannerViewModel.stopQrScanner();
         });
+    }
 
-        viewModel.stopCamera.observe(this, stop -> {
+    private void observeViewModels() {
+        qrScannerViewModel.isQrVisible.observe(this, isVisible -> qrOverlay.setBorderColor(isVisible ? Color.GREEN : Color.WHITE));
+
+        qrScannerViewModel.stopCamera.observe(this, stop -> {
             if (stop != null && stop) {
-                viewModel.stopCamera();
+                qrScannerViewModel.stopCamera();
                 binding.previewView.setVisibility(View.GONE);
-                viewModel.resetStopCameraFlag();
+                qrScannerViewModel.resetStopCameraFlag();
             }
         });
 
-        viewModel.getLogoutSuccess().observe(this, success -> {
+        sessionViewModel.logoutSuccess.observe(this, success -> {
             if (Boolean.TRUE.equals(success)) {
                 startActivity(new Intent(this, LoginActivity.class));
                 finish();
             }
         });
 
-        viewModel.locationsState.observe(this, state -> {
+        sessionViewModel.locationsState.observe(this, state -> {
             if (state instanceof LocationsUiState.Success) {
                 adapter.updateItems(((LocationsUiState.Success) state).data);
             }
         });
 
-        viewModel.rawInputUiState.observe(this, state -> {
+        rawInputViewModel.rawInputUiState.observe(this, state -> {
             if (state instanceof RawInputUiState.Success) {
                 LocationUi location = ((RawInputUiState.Success) state).locationUi;
                 adapter.addItemAtTop(location);
                 binding.recyclerView.scrollToPosition(0);
             }
         });
-
     }
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
         if (requestCode == REQUEST_CODE_CAMERA) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 showCamera();
@@ -185,21 +205,18 @@ public class MainActivity extends AppCompatActivity implements LocationAdapter.O
         }
     }
 
-    private void showCamera() {
-        previewView.setVisibility(View.VISIBLE);
-        btnCloseCamera.setVisibility(View.VISIBLE);
-        qrOverlay.post(() -> {
-            RectF guideRect = qrOverlay.getGuideRect();
-            viewModel.initQrScanner(this, this, previewView, guideRect);
-        });
-    }
+    private void openMapFragment(String latitude, String longitude) {
+        MapFragment fragment = new MapFragment();
+        Bundle args = new Bundle();
+        args.putString("lat", latitude);
+        args.putString("lng", longitude);
+        fragment.setArguments(args);
 
-    private void closeCamera() {
-        btnCloseCamera.setOnClickListener(v -> {
-            previewView.setVisibility(View.GONE);
-            btnCloseCamera.setVisibility(View.GONE);
-            viewModel.stopQrScanner();
-        });
+        getSupportFragmentManager()
+            .beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .addToBackStack(null)
+            .commit();
     }
 
     @Override
