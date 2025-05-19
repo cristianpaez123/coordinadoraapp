@@ -4,6 +4,7 @@ import com.example.coordinadoraapp.domain.model.Location;
 import com.example.coordinadoraapp.domain.repository.LocationRepository;
 import com.example.coordinadoraapp.domain.repository.RemoteLocationBackupRepository;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -30,7 +31,16 @@ public class GetLocationsUseCase {
             .flatMapObservable(localList -> localList == null || localList.isEmpty()
                 ? Observable.empty()
                 : Observable.just(localList))
-            .switchIfEmpty(remoteRepository.getBackedUpLocations().toObservable())
-            .firstOrError();
+            .switchIfEmpty(
+                remoteRepository.getBackedUpLocations()
+                    .toObservable()
+                    .flatMap(remoteList ->
+                        locationRepository.saveAllLocations(remoteList)
+                            .andThen(Observable.just(remoteList))))
+            .firstOrError()
+            .map(list -> {
+                Collections.reverse(list);
+                return list;
+            });
     }
 }

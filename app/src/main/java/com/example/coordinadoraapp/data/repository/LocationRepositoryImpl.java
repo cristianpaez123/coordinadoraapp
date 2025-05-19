@@ -26,6 +26,11 @@ public class LocationRepositoryImpl implements LocationRepository {
     }
 
     @Override
+    public Completable saveAllLocations(List<Location> locations) {
+        return localDataSource.saveAllLocations(locations);
+    }
+
+    @Override
     public Single<List<Location>> getAllLocations() {
         return localDataSource.getAll();
     }

@@ -30,18 +30,26 @@ public class LocationLocalDataSource {
 
     public Completable saveLocation(Location location) {
         return Completable.fromAction(() -> {
-            SQLiteDatabase db = null;
-            try {
-                db = dbHelper.getWritableDatabase();
-                ContentValues values = new ContentValues();
-                values.put(COLUMN_LABEL, location.label);
-                values.put(COLUMN_LATITUDE, location.latitude);
-                values.put(COLUMN_LONGITUDE, location.longitude);
-                values.put(COLUMN_OBSERVATION, location.observation);
-
+            try (SQLiteDatabase db = dbHelper.getWritableDatabase()) {
+                ContentValues values = buildContentValues(location);
                 db.insert(LocationDbHelper.TABLE_NAME, null, values);
-            } finally {
-                if (db != null) db.close();
+            }
+        });
+    }
+
+    public Completable saveAllLocations(List<Location> locations) {
+        return Completable.fromAction(() -> {
+            try (SQLiteDatabase db = dbHelper.getWritableDatabase()) {
+                db.beginTransaction();
+                try {
+                    for (Location location : locations) {
+                        ContentValues values = buildContentValues(location);
+                        db.insert(LocationDbHelper.TABLE_NAME, null, values);
+                    }
+                    db.setTransactionSuccessful();
+                } finally {
+                    db.endTransaction();
+                }
             }
         });
     }
@@ -68,7 +76,6 @@ public class LocationLocalDataSource {
 
                     locations.add(new Location(label, latitude, longitude, observation));
                 }
-                Collections.reverse(locations);
             } finally {
                 if (cursor != null) cursor.close();
                 db.close();
@@ -84,6 +91,15 @@ public class LocationLocalDataSource {
             db.delete(LocationDbHelper.TABLE_NAME, null, null);
             db.close();
         });
+    }
+
+    private ContentValues buildContentValues(Location location) {
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_LABEL, location.label);
+        values.put(COLUMN_LATITUDE, location.latitude);
+        values.put(COLUMN_LONGITUDE, location.longitude);
+        values.put(COLUMN_OBSERVATION, location.observation);
+        return values;
     }
 
 }
