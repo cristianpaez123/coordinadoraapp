@@ -2,7 +2,6 @@ package com.example.coordinadoraapp.ui.mainActivity;
 
 import static com.example.coordinadoraapp.utils.CameraPermissionManager.REQUEST_CODE_CAMERA;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -27,14 +26,16 @@ import com.example.coordinadoraapp.domain.repository.MainRepository;
 import com.example.coordinadoraapp.ui.Map.MapFragment;
 import com.example.coordinadoraapp.sync.LocationSyncManager;
 import com.example.coordinadoraapp.ui.login.LoginActivity;
+import com.example.coordinadoraapp.ui.login.LoginViewModel;
 import com.example.coordinadoraapp.ui.mainActivity.adapter.LocationAdapter;
 import com.example.coordinadoraapp.ui.mainActivity.state.LocationsUiState;
-import com.example.coordinadoraapp.ui.mainActivity.state.RawInputUiState;
+import com.example.coordinadoraapp.ui.mainActivity.state.AddLocationUiState;
 import com.example.coordinadoraapp.ui.mainActivity.viewmodel.QrScannerViewModel;
 import com.example.coordinadoraapp.ui.mainActivity.viewmodel.LocationViewModel;
 import com.example.coordinadoraapp.ui.mainActivity.viewmodel.SessionViewModel;
 import com.example.coordinadoraapp.ui.model.LocationUi;
 import com.example.coordinadoraapp.utils.CameraPermissionManager;
+import com.google.android.material.snackbar.Snackbar;
 
 import javax.inject.Inject;
 
@@ -164,15 +165,27 @@ public class MainActivity extends AppCompatActivity implements LocationAdapter.O
 
         locationViewModel.getLocationsState.observe(this, state -> {
             if (state instanceof LocationsUiState.Success) {
+                showLoadingOverlay(false);
                 adapter.updateItems(((LocationsUiState.Success) state).data);
+            } else if (state instanceof LocationsUiState.Loading){
+                showLoadingOverlay(true);
+            } else if (state instanceof LocationsUiState.Error) {
+                showLoadingOverlay(false);
+                showError(((LocationsUiState.Error) state).messageRes, ((LocationsUiState.Error) state).message);
             }
         });
 
-        locationViewModel.rawInputUiState.observe(this, state -> {
-            if (state instanceof RawInputUiState.Success) {
-                LocationUi location = ((RawInputUiState.Success) state).locationUi;
+        locationViewModel.addLocationUiState.observe(this, state -> {
+            if (state instanceof AddLocationUiState.Success) {
+                showLoadingOverlay(false);
+                LocationUi location = ((AddLocationUiState.Success) state).locationUi;
                 adapter.addItemAtTop(location);
                 binding.recyclerView.scrollToPosition(0);
+            } else if (state instanceof AddLocationUiState.Loading) {
+                showLoadingOverlay(true);
+            }else if (state instanceof AddLocationUiState.Error) {
+                showLoadingOverlay(false);
+                showError(((AddLocationUiState.Error) state).messageRes, ((AddLocationUiState.Error) state).message);
             }
         });
     }
@@ -208,5 +221,17 @@ public class MainActivity extends AppCompatActivity implements LocationAdapter.O
     @Override
     public void onMapClick(String latitude, String longitude) {
         openMapFragment(latitude, longitude);
+    }
+
+    private void showLoadingOverlay(boolean show) {
+        binding.includeLoadingOverlay.loadingOverlay.setVisibility(show ? View.VISIBLE : View.GONE);
+    }
+
+    private void showError(Integer messageRes, String messageString) {
+        showLoadingOverlay(false);
+        String message = messageRes != null
+            ? getString(messageRes)
+            : (messageString != null ? messageString : getString(R.string.error_unexpected));
+        Snackbar.make(binding.getRoot(), message, Snackbar.LENGTH_LONG).show();
     }
 }

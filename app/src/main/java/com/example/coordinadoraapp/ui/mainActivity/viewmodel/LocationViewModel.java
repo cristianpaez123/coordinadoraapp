@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModel;
 import com.example.coordinadoraapp.domain.usecase.AddLocationUseCase;
 import com.example.coordinadoraapp.domain.usecase.GetLocationsUseCase;
 import com.example.coordinadoraapp.ui.mainActivity.state.LocationsUiState;
-import com.example.coordinadoraapp.ui.mainActivity.state.RawInputUiState;
+import com.example.coordinadoraapp.ui.mainActivity.state.AddLocationUiState;
 import com.example.coordinadoraapp.ui.mapper.LocationUiMapper;
 
 import java.util.stream.Collectors;
@@ -27,8 +27,8 @@ public class LocationViewModel extends ViewModel {
     private final AddLocationUseCase addLocationUseCase;
     private final GetLocationsUseCase getLocationsUseCase;
 
-    private final MutableLiveData<RawInputUiState> _rawInputUiState = new MutableLiveData<>();
-    public final LiveData<RawInputUiState> rawInputUiState = _rawInputUiState;
+    private final MutableLiveData<AddLocationUiState> _addLocationUiState = new MutableLiveData<>();
+    public final LiveData<AddLocationUiState> addLocationUiState = _addLocationUiState;
 
     private final MutableLiveData<LocationsUiState> _getLocationsState = new MutableLiveData<>();
     public final LiveData<LocationsUiState> getLocationsState = _getLocationsState;
@@ -42,13 +42,13 @@ public class LocationViewModel extends ViewModel {
 
     public void submit(String rawText) {
         String base64 = Base64.encodeToString(rawText.getBytes(), Base64.NO_WRAP);
-        _rawInputUiState.setValue(new RawInputUiState.Loading());
+        _addLocationUiState.setValue(new AddLocationUiState.Loading());
         disposables.add(addLocationUseCase.execute(base64)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
-                validatedData -> _rawInputUiState.setValue(new RawInputUiState.Success(LocationUiMapper.toUi(validatedData))),
-                throwable -> _rawInputUiState.setValue(new RawInputUiState.Error(throwable.getMessage()))
+                validatedData -> _addLocationUiState.setValue(new AddLocationUiState.Success(LocationUiMapper.toUi(validatedData))),
+                throwable -> _addLocationUiState.setValue(new AddLocationUiState.Error(throwable.getMessage()))
             ));
     }
 
