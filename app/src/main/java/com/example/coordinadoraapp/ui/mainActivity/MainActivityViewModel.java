@@ -36,6 +36,7 @@ public class MainActivityViewModel extends ViewModel {
 
     private final QrAnalyzerUC analyzer;
     private final StartQrScannerUseCase startScannerUseCase;
+
     private final GetLocationsUseCase getLocationsUseCase;
     private final MutableLiveData<Boolean> logoutSuccess = new MutableLiveData<>();
 
