@@ -37,7 +37,6 @@ public class LocationSyncManager {
                         syncAllLocations();
                     }
                 }, throwable -> {
-                    // Opcional: manejar error en el stream del contador
                     throwable.printStackTrace();
                 })
         );
@@ -55,10 +54,8 @@ public class LocationSyncManager {
                 .flatMapCompletable(remoteBackupRepository::backupLocations)
                 .subscribe(
                     () -> {
-                        // Opcional: log success
                     },
                     throwable -> {
-                        // Opcional: log error
                         throwable.printStackTrace();
                     }
                 )
