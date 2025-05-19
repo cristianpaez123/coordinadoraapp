@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -14,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.coordinadoraapp.MyApplication;
 import com.example.coordinadoraapp.R;
+import com.example.coordinadoraapp.utils.UbicationPermissionManager;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -26,6 +28,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import javax.inject.Inject;
 
+import io.reactivex.rxjava3.annotations.NonNull;
+
 public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private static final int REQUEST_LOCATION_PERMISSION = 1002;
@@ -37,8 +41,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private GoogleMap googleMap;
     private FusedLocationProviderClient fusedLocationClient;
 
-    private double destinationLat = 0.0;
-    private double destinationLng = 0.0;
+    private LatLng destination;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,20 +51,21 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         ((MyApplication) requireActivity().getApplication()).getAppComponent().inject(this);
 
         if (getArguments() != null) {
-            destinationLat = getArguments().getDouble("lat", 0.0);
-            destinationLng = getArguments().getDouble("lng", 0.0);
+            double lat = getArguments().getDouble("lat", 0.0);
+            double lng = getArguments().getDouble("lng", 0.0);
+            destination = new LatLng(lat, lng);
         }
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext());
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_map, container, false);
-
         viewModel = new ViewModelProvider(this, viewModelFactory).get(MapViewModel.class);
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext());
 
-        SupportMapFragment mapFragment = (SupportMapFragment)
-                getChildFragmentManager().findFragmentById(R.id.map);
+        SupportMapFragment mapFragment =
+                (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         if (mapFragment != null) {
             mapFragment.getMapAsync(this);
         }
@@ -72,7 +77,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap map) {
         this.googleMap = map;
         observePolyline();
-        getUserLocationIfPermitted();
+        requestUserLocation();
 
     }
 
@@ -94,28 +99,32 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 });
     }
 
-    private void getUserLocationIfPermitted() {
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
+    private void requestUserLocation() {
+        if (!UbicationPermissionManager.hasLocationPermission(requireContext())) {
+            UbicationPermissionManager.requestLocationPermission(this, REQUEST_LOCATION_PERMISSION);
+            return;
+        }
 
-            fusedLocationClient.getLastLocation()
-                    .addOnSuccessListener(location -> {
-                        if (location != null) {
-                            LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
-                            LatLng destination = new LatLng(destinationLat, destinationLng);
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(location -> {
+                    if (location == null) {
+                        Log.w("MapFragment", "Ubicación actual es null.");
+                        return;
+                    }
 
-                            viewModel.loadPolyline(userLocation, destination);
-                        } else {
-                            Log.w("MapFragment", "Ubicación actual es null.");
-                        }
-                    })
-                    .addOnFailureListener(e ->
-                            Log.e("MapFragment", "Error al obtener ubicación", e));
+                    LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                    viewModel.loadPolyline(userLocation, destination);
+                })
+                .addOnFailureListener(e ->
+                        Log.e("MapFragment", "Error al obtener ubicación", e));
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (UbicationPermissionManager.isLocationPermissionGranted(requestCode, permissions, grantResults)) {
+            requestUserLocation();
         } else {
-            requestPermissions(
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    REQUEST_LOCATION_PERMISSION
-            );
+            Toast.makeText(getContext(), "Se requiere permiso de ubicación", Toast.LENGTH_SHORT).show();
         }
     }
 }
