@@ -4,9 +4,12 @@ import com.example.coordinadoraapp.data.local.LocationLocalDataSource;
 import com.example.coordinadoraapp.domain.model.Location;
 import com.example.coordinadoraapp.domain.repository.LocationRepository;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Single;
 
 public class LocationRepositoryImpl implements LocationRepository {
 
@@ -21,5 +24,11 @@ public class LocationRepositoryImpl implements LocationRepository {
     public Completable saveLocation(Location location) {
         return localDataSource.saveLocation(location);
     }
+
+    @Override
+    public Single<List<Location>> getAllLocations() {
+        return localDataSource.getAll();
+    }
+
 }
 
