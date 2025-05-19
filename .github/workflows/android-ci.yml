@@ -3,8 +3,6 @@ name: Android CI/CD
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 jobs:
   build-test-deploy:
@@ -18,10 +16,12 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: '17'  # o la versión que uses
+          java-version: '17'
 
-      - name: ⚙️ Setup Gradle
+      - name: ⚙️ Setup Gradle (sin caché)
         uses: gradle/gradle-build-action@v2
+        with:
+          cache-disabled: true
 
       - name: 🔐 Decode Firebase credentials
         run: echo "${{ secrets.FIREBASE_CREDENTIALS }}" > service-account.json
@@ -33,6 +33,4 @@ jobs:
         run: ./gradlew assembleDebug
 
       - name: 🚀 Upload to Firebase App Distribution
-        run: ./gradlew appDistributionUploadDebug \
-          -PfirebaseServiceCredentials=service-account.json \
-          -PfirebaseTesters=${{ secrets.FIREBASE_TESTERS }}
+        run: ./gradlew -PfirebaseServiceCredentials=service-account.json -PfirebaseTesters=${{ secrets.FIREBASE_TESTERS }} appDistributionUploadDebug
