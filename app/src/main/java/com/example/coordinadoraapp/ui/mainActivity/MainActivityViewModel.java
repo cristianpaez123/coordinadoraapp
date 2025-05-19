@@ -122,5 +122,8 @@ public class MainActivityViewModel extends ViewModel {
             }
         }
     }
+    public void stopQrScanner() {
+        analyzer.clear();
+    }
 }
 
