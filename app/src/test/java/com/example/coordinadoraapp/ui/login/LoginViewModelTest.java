@@ -36,7 +36,6 @@ public class LoginViewModelTest {
         loginUseCase = mock(LoginUseCase.class);
         observer = mock(Observer.class);
 
-        // ✅ Inyectamos los Schedulers directamente
         viewModel = new LoginViewModel(loginUseCase, Schedulers.trampoline(), Schedulers.trampoline());
         viewModel.uiState.observeForever(observer);
     }

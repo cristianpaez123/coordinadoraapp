@@ -14,4 +14,10 @@
     <string name="error_user_already_exists">An account with this email already exists</string>
     <string name="error_network">Network error. Please check your connection</string>
 
+    <string name="camera_permission_denied">Camera permission denied</string>
+    <string name="camera_permission_rationale">We need camera permission to scan the QR code</string>
+    <string name="logout_button_text">Log out</string>
+    <string name="read_info_title">Read Information</string>
+    <string name="edittext_hint">Type here</string>
+
 </resources>

@@ -11,7 +11,9 @@ public class LocationDtoMapper {
     private static final String OBSERVATION_PREFIX = "observacion";
 
     public static Location toDomain(LocationDto dto) {
-        String[] parts = dto.data.split("-");
+        String regex = String.format("-(?=%s:|%s:|%s:|%s:)",
+            LABEL_PREFIX, LATITUDE_PREFIX, LONGITUDE_PREFIX, OBSERVATION_PREFIX);
+        String[] parts = dto.data.split(regex);
 
         String label = null;
         String latitude = null;

@@ -19,12 +19,19 @@
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnLogin"
-                style="@style/RoundedBlueButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="20dp"
-                android:text="Cerrar Sesión"
+                android:text="@string/logout_button_text"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp"
+                android:backgroundTint="?attr/colorPrimary"
+                android:insetTop="8dp"
+                android:insetBottom="8dp"
+                app:cornerRadius="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -52,7 +59,6 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_margin="12dp"
-                android:contentDescription="Cerrar cámara"
                 android:src="@drawable/ic_close"
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="@id/previewView"
@@ -63,9 +69,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="Leer Informacion"
+                android:text="@string/read_info_title"
                 android:textColor="@color/colorPrimary"
                 android:textStyle="bold"
+                android:textSize="30sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/previewView" />
@@ -82,7 +89,6 @@
                     android:id="@+id/cameraIcon"
                     android:layout_width="35dp"
                     android:layout_height="35dp"
-                    android:contentDescription="Abrir cámara"
                     android:src="@drawable/ic_camera"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -92,7 +98,7 @@
                     android:id="@+id/editText"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:hint="Escribe aquí"
+                    android:hint="@string/edittext_hint"
                     android:imeOptions="actionDone"
                     android:inputType="text"
                     android:text="etiqueta1d:720024556544001-latitud:6.74444-longitud:-75.45454-observacion:prueba"
@@ -107,8 +113,7 @@
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="Confirmar"
-                    android:src="@drawable/ic_search"
+                    android:src="@drawable/ic_arrow"
                     app:layout_constraintBottom_toBottomOf="@id/editText"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@id/editText" />
@@ -126,4 +131,9 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
+
+    <include
+        android:id="@+id/includeLoadingOverlay"
+        layout="@layout/loading_overlay" />
+
 </FrameLayout>

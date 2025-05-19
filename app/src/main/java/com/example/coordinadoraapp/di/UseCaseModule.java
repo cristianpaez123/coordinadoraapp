@@ -1,12 +1,12 @@
 package com.example.coordinadoraapp.di;
 
-import com.example.coordinadoraapp.domain.mainActivity.MainActivityRepository;
-import com.example.coordinadoraapp.domain.mainActivity.QrAnalyzerUC;
-import com.example.coordinadoraapp.domain.mainActivity.StartQrScannerUseCase;
+import com.example.coordinadoraapp.domain.repository.MainRepository;
+import com.example.coordinadoraapp.domain.usecase.QrAnalyzerUseCase;
+import com.example.coordinadoraapp.domain.usecase.StartQrScannerUseCase;
 import com.example.coordinadoraapp.domain.repository.AuthRepository;
 import com.example.coordinadoraapp.domain.usecase.GetMapPolylineUseCase;
 import com.example.coordinadoraapp.domain.usecase.LoginUseCase;
-import com.example.coordinadoraapp.ui.mainActivity.MainActivityViewModel;
+
 import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
@@ -21,8 +21,8 @@ public class UseCaseModule {
     }
     @Provides
     @Singleton
-    public QrAnalyzerUC provideQrAnalyzerUC(MainActivityRepository repository) {
-        return new QrAnalyzerUC(repository);
+    public QrAnalyzerUseCase provideQrAnalyzerUC(MainRepository repository) {
+        return new QrAnalyzerUseCase(repository);
     }
 
     @Provides
