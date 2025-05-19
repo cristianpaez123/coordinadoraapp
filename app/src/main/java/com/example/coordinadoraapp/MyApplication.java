@@ -5,7 +5,6 @@ import android.app.Application;
 import com.example.coordinadoraapp.di.AppComponent;
 import com.example.coordinadoraapp.di.AppModule;
 import com.example.coordinadoraapp.di.DaggerAppComponent;
-import com.example.coordinadoraapp.di.NetworkModule;
 
 public class MyApplication extends Application {
     public static AppComponent appComponent;
