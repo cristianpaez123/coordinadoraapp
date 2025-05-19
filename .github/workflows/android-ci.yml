@@ -1,0 +1,12 @@
+name: Test Firebase Secret Access
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-firebase-secret:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🔐 Verifica acceso al secret FIREBASE_CREDENTIALS
+        run: echo "${{ secrets.FIREBASE_CREDENTIALS }}" | head -c 100

@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.androidApplication)
     id("com.google.gms.google-services")
+    id("com.google.firebase.appdistribution") version "4.0.0"
 }
 
 android {
@@ -82,4 +83,11 @@ dependencies {
 
 tasks.withType<Test> {
     jvmArgs("-Dnet.bytebuddy.experimental=true")
+}
+
+firebaseAppDistribution {
+    artifactType = "APK"
+    releaseNotes = "Build automático desde GitHub Actions"
+    serviceCredentialsFile = project.findProperty("firebaseServiceCredentials") as String? ?: ""
+    testers = project.findProperty("firebaseTesters") as String? ?: ""
 }
