@@ -48,6 +48,7 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.1.1"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-firestore")
     //dagger2
     implementation("com.google.dagger:dagger:2.44")
     annotationProcessor("com.google.dagger:dagger-compiler:2.44")
