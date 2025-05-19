@@ -9,6 +9,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
 
 public class LocationRepositoryImpl implements LocationRepository {
@@ -38,6 +39,11 @@ public class LocationRepositoryImpl implements LocationRepository {
     @Override
     public Completable clearAllLocations() {
         return localDataSource.clearAll();
+    }
+
+    @Override
+    public Observable<Integer> getLocationCountStream() {
+        return localDataSource.observeLocationCount();
     }
 
 }

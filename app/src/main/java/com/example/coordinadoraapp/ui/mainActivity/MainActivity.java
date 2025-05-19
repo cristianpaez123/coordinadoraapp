@@ -25,6 +25,7 @@ import com.example.coordinadoraapp.MyApplication;
 import com.example.coordinadoraapp.R;
 import com.example.coordinadoraapp.databinding.ActivityMainBinding;
 import com.example.coordinadoraapp.domain.mainActivity.MainActivityRepository;
+import com.example.coordinadoraapp.sync.LocationSyncManager;
 import com.example.coordinadoraapp.ui.login.LoginActivity;
 import com.example.coordinadoraapp.ui.mainActivity.adapter.LocationAdapter;
 import com.example.coordinadoraapp.ui.mainActivity.state.LocationsUiState;
@@ -41,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Inject
     ViewModelProvider.Factory viewModelFactory;
+    @Inject
+    LocationSyncManager locationSyncManager;
     @Inject
     MainActivityRepository repository;
     private MainActivityViewModel viewModel;

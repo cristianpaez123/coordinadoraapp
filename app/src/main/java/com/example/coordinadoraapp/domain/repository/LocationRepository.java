@@ -5,6 +5,7 @@ import com.example.coordinadoraapp.domain.model.Location;
 import java.util.List;
 
 import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
 
 public interface LocationRepository {
@@ -12,5 +13,6 @@ public interface LocationRepository {
     Completable saveAllLocations(List<Location> locations);
     Single<List<Location>> getAllLocations();
     Completable clearAllLocations();
+    Observable<Integer> getLocationCountStream();
 }
 

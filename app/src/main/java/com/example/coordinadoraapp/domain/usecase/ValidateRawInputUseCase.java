@@ -30,7 +30,6 @@ public class ValidateRawInputUseCase {
         return validationRepository.submitEncodedData(rawText)
             .flatMap(location ->
                 locationRepository.saveLocation(location)
-                    .andThen(remoteBackupRepository.backupLocation(location))
                     .andThen(Single.just(location))
             );
     }

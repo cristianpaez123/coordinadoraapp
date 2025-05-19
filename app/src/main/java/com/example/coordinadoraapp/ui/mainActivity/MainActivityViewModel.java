@@ -16,6 +16,7 @@ import com.example.coordinadoraapp.domain.mainActivity.StartQrScannerUseCase;
 import com.example.coordinadoraapp.domain.usecase.GetLocationsUseCase;
 import com.example.coordinadoraapp.domain.usecase.LogoutUseCase;
 import com.example.coordinadoraapp.domain.usecase.ValidateRawInputUseCase;
+import com.example.coordinadoraapp.sync.LocationSyncManager;
 import com.example.coordinadoraapp.ui.mainActivity.state.LocationsUiState;
 import com.example.coordinadoraapp.ui.mainActivity.state.RawInputUiState;
 import com.example.coordinadoraapp.ui.mapper.LocationUiMapper;

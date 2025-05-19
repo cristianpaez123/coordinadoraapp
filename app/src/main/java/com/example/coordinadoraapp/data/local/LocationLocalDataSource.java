@@ -12,13 +12,16 @@ import java.util.Collections;
 import java.util.List;
 
 import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.subjects.PublishSubject;
 
 public class LocationLocalDataSource {
 
     private final LocationDbHelper dbHelper;
 
-    // Column names (you could also extract these as static final constants in LocationDbHelper)
+    private final PublishSubject<Integer> locationCountSubject = PublishSubject.create();
+
     private static final String COLUMN_LABEL = "label";
     private static final String COLUMN_LATITUDE = "latitude";
     private static final String COLUMN_LONGITUDE = "longitude";
@@ -33,6 +36,7 @@ public class LocationLocalDataSource {
             try (SQLiteDatabase db = dbHelper.getWritableDatabase()) {
                 ContentValues values = buildContentValues(location);
                 db.insert(LocationDbHelper.TABLE_NAME, null, values);
+                locationCountSubject.onNext(getAll().blockingGet().size());
             }
         });
     }
@@ -100,6 +104,10 @@ public class LocationLocalDataSource {
         values.put(COLUMN_LONGITUDE, location.longitude);
         values.put(COLUMN_OBSERVATION, location.observation);
         return values;
+    }
+
+    public Observable<Integer> observeLocationCount() {
+        return locationCountSubject.hide();
     }
 
 }

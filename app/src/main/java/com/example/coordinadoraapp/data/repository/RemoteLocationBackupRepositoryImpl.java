@@ -55,6 +55,36 @@ public class RemoteLocationBackupRepositoryImpl implements RemoteLocationBackupR
     }
 
     @Override
+    public Completable backupLocations(List<Location> locations) {
+        if (auth.getCurrentUser() == null) {
+            return Completable.error(new IllegalStateException(ERROR_USER_NOT_AUTHENTICATED));
+        }
+
+        if (locations == null || locations.isEmpty()) {
+            return Completable.complete();
+        }
+
+        String userId = auth.getCurrentUser().getUid();
+
+        List<Completable> operations = new ArrayList<>();
+        for (Location location : locations) {
+            Completable op = Completable.create(emitter -> {
+                firestore.collection(COLLECTION_BACKUP)
+                    .document(userId)
+                    .collection(SUBCOLLECTION_LOCATIONS)
+                    .add(location)
+                    .addOnSuccessListener(docRef -> emitter.onComplete())
+                    .addOnFailureListener(error ->
+                        emitter.onError(new Exception(ERROR_SAVE_FAILED, error))
+                    );
+            });
+            operations.add(op);
+        }
+
+        return Completable.merge(operations);
+    }
+
+    @Override
     public Single<List<Location>> getBackedUpLocations() {
         return Single.create(emitter -> {
             String uid = Objects.requireNonNull(auth.getCurrentUser()).getUid();

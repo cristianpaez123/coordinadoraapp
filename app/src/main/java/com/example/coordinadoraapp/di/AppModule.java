@@ -5,6 +5,9 @@ import android.content.Context;
 import com.example.coordinadoraapp.data.local.LocationLocalDataSource;
 import com.example.coordinadoraapp.data.repository.MainActivityImpl;
 import com.example.coordinadoraapp.domain.mainActivity.MainActivityRepository;
+import com.example.coordinadoraapp.domain.repository.LocationRepository;
+import com.example.coordinadoraapp.domain.repository.RemoteLocationBackupRepository;
+import com.example.coordinadoraapp.sync.LocationSyncManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.mlkit.vision.barcode.BarcodeScanner;
@@ -63,5 +66,14 @@ public class AppModule {
     @Singleton
     public LocationLocalDataSource provideLocalDataSource(Context context) {
         return new LocationLocalDataSource(context);
+    }
+
+    @Provides
+    @Singleton
+    public LocationSyncManager provideLocationSyncManager(
+        LocationRepository locationRepository,
+        RemoteLocationBackupRepository remoteRepository
+    ) {
+        return new LocationSyncManager(locationRepository, remoteRepository);
     }
 }
