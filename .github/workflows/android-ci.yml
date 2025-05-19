@@ -24,7 +24,7 @@ jobs:
           cache-disabled: true
 
       - name: 🔐 Decode Firebase credentials
-        run: echo "${{ secrets.FIREBASE_CREDENTIALS }}" > service-account.json
+        run: echo '${{ secrets.FIREBASE_CREDENTIALS }}' > service-account.json
 
       - name: 🧪 Run unit tests
         run: ./gradlew test
