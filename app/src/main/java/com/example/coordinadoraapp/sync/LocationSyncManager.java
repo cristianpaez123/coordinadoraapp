@@ -1,6 +1,5 @@
 package com.example.coordinadoraapp.sync;
 
-import com.example.coordinadoraapp.domain.model.Location;
 import com.example.coordinadoraapp.domain.repository.LocationRepository;
 import com.example.coordinadoraapp.domain.repository.RemoteLocationBackupRepository;
 
@@ -37,7 +36,6 @@ public class LocationSyncManager {
                         syncAllLocations();
                     }
                 }, throwable -> {
-                    // Opcional: manejar error en el stream del contador
                     throwable.printStackTrace();
                 })
         );
@@ -55,17 +53,11 @@ public class LocationSyncManager {
                 .flatMapCompletable(remoteBackupRepository::backupLocations)
                 .subscribe(
                     () -> {
-                        // Opcional: log success
                     },
                     throwable -> {
-                        // Opcional: log error
                         throwable.printStackTrace();
                     }
                 )
         );
-    }
-
-    public void clear() {
-        disposables.clear();
     }
 }
