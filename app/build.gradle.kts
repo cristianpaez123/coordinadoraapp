@@ -64,4 +64,7 @@ dependencies {
     implementation ("com.android.volley:volley:1.2.1")
     // gson
     implementation("com.google.code.gson:gson:2.10.1")
+    //ApiGoogleMaps
+    implementation ("com.google.android.gms:play-services-maps:18.2.0")
+
 }
