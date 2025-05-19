@@ -4,7 +4,6 @@ import com.example.coordinadoraapp.domain.model.Location;
 
 import io.reactivex.rxjava3.core.Single;
 
-public interface RawInputValidationRepository {
-    Single<Location> submitEncodedData(String base64);
-
+public interface AddLocationRepository {
+    Single<Location> addLocation(String base64);
 }

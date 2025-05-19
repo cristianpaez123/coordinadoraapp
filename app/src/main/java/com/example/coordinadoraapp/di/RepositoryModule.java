@@ -1,12 +1,12 @@
 package com.example.coordinadoraapp.di;
 
+import com.example.coordinadoraapp.data.repository.AddLocationRepositoryImpl;
 import com.example.coordinadoraapp.data.repository.AuthRepositoryImpl;
 import com.example.coordinadoraapp.data.repository.LocationRepositoryImpl;
-import com.example.coordinadoraapp.data.repository.RawInputValidationRepositoryImpl;
 import com.example.coordinadoraapp.data.repository.RemoteLocationBackupRepositoryImpl;
+import com.example.coordinadoraapp.domain.repository.AddLocationRepository;
 import com.example.coordinadoraapp.domain.repository.AuthRepository;
 import com.example.coordinadoraapp.domain.repository.LocationRepository;
-import com.example.coordinadoraapp.domain.repository.RawInputValidationRepository;
 import com.example.coordinadoraapp.domain.repository.RemoteLocationBackupRepository;
 
 import javax.inject.Singleton;
@@ -23,8 +23,8 @@ public abstract class RepositoryModule {
 
     @Binds
     @Singleton
-    public abstract RawInputValidationRepository bindRawInputValidationRepository(
-        RawInputValidationRepositoryImpl impl
+    public abstract AddLocationRepository bindRawInputValidationRepository(
+        AddLocationRepositoryImpl impl
     );
 
     @Binds

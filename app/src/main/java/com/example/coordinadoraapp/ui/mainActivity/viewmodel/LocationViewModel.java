@@ -6,8 +6,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.coordinadoraapp.domain.usecase.AddLocationUseCase;
 import com.example.coordinadoraapp.domain.usecase.GetLocationsUseCase;
-import com.example.coordinadoraapp.domain.usecase.ValidateRawInputUseCase;
 import com.example.coordinadoraapp.ui.mainActivity.state.LocationsUiState;
 import com.example.coordinadoraapp.ui.mainActivity.state.RawInputUiState;
 import com.example.coordinadoraapp.ui.mapper.LocationUiMapper;
@@ -24,7 +24,7 @@ public class LocationViewModel extends ViewModel {
 
     private final CompositeDisposable disposables = new CompositeDisposable();
 
-    private final ValidateRawInputUseCase validateRawInputUseCase;
+    private final AddLocationUseCase addLocationUseCase;
     private final GetLocationsUseCase getLocationsUseCase;
 
     private final MutableLiveData<RawInputUiState> _rawInputUiState = new MutableLiveData<>();
@@ -34,8 +34,8 @@ public class LocationViewModel extends ViewModel {
     public final LiveData<LocationsUiState> getLocationsState = _getLocationsState;
 
     @Inject
-    public LocationViewModel(ValidateRawInputUseCase validateRawInputUseCase, GetLocationsUseCase getLocationsUseCase) {
-        this.validateRawInputUseCase = validateRawInputUseCase;
+    public LocationViewModel(AddLocationUseCase addLocationUseCase, GetLocationsUseCase getLocationsUseCase) {
+        this.addLocationUseCase = addLocationUseCase;
         this.getLocationsUseCase = getLocationsUseCase;
         loadLocations();
     }
@@ -43,7 +43,7 @@ public class LocationViewModel extends ViewModel {
     public void submit(String rawText) {
         String base64 = Base64.encodeToString(rawText.getBytes(), Base64.NO_WRAP);
         _rawInputUiState.setValue(new RawInputUiState.Loading());
-        disposables.add(validateRawInputUseCase.execute(base64)
+        disposables.add(addLocationUseCase.execute(base64)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(

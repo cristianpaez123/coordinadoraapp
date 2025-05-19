@@ -1,31 +1,29 @@
 package com.example.coordinadoraapp.data.repository;
 
-import android.util.Base64;
-
 import com.example.coordinadoraapp.data.dto.LocationDto;
 import com.example.coordinadoraapp.data.mapper.LocationDtoMapper;
 import com.example.coordinadoraapp.data.payload.EncodedLocationPayload;
 import com.example.coordinadoraapp.data.remote.ApiConstants;
 import com.example.coordinadoraapp.data.remote.NetworkRequestService;
 import com.example.coordinadoraapp.domain.model.Location;
-import com.example.coordinadoraapp.domain.repository.RawInputValidationRepository;
+import com.example.coordinadoraapp.domain.repository.AddLocationRepository;
 import com.google.gson.Gson;
 
 import javax.inject.Inject;
 
 import io.reactivex.rxjava3.core.Single;
 
-public class RawInputValidationRepositoryImpl implements RawInputValidationRepository {
+public class AddLocationRepositoryImpl implements AddLocationRepository {
 
     private final NetworkRequestService networkRequestService;
 
     @Inject
-    public RawInputValidationRepositoryImpl(NetworkRequestService networkRequestService) {
+    public AddLocationRepositoryImpl(NetworkRequestService networkRequestService) {
         this.networkRequestService = networkRequestService;
     }
 
     @Override
-    public Single<Location> submitEncodedData(String base64) {
+    public Single<Location> addLocation(String base64) {
 
         EncodedLocationPayload payload = new EncodedLocationPayload(base64);
 
