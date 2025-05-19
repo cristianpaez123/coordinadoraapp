@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.coordinadoraapp.ui.Map.MapViewModel;
 import com.example.coordinadoraapp.ui.login.LoginViewModel;
 import com.example.coordinadoraapp.ui.mainActivity.viewmodel.QrScannerViewModel;
-import com.example.coordinadoraapp.ui.mainActivity.viewmodel.RawInputViewModel;
+import com.example.coordinadoraapp.ui.mainActivity.viewmodel.LocationViewModel;
 import com.example.coordinadoraapp.ui.mainActivity.viewmodel.SessionViewModel;
 
 import dagger.Binds;
@@ -28,8 +28,8 @@ public abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(RawInputViewModel.class)
-    abstract ViewModel bindRawInputViewModel(RawInputViewModel viewModel);
+    @ViewModelKey(LocationViewModel.class)
+    abstract ViewModel bindRawInputViewModel(LocationViewModel viewModel);
 
     @Binds
     @IntoMap

@@ -6,9 +6,13 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.coordinadoraapp.domain.usecase.GetLocationsUseCase;
 import com.example.coordinadoraapp.domain.usecase.ValidateRawInputUseCase;
+import com.example.coordinadoraapp.ui.mainActivity.state.LocationsUiState;
 import com.example.coordinadoraapp.ui.mainActivity.state.RawInputUiState;
 import com.example.coordinadoraapp.ui.mapper.LocationUiMapper;
+
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -16,16 +20,24 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
-public class RawInputViewModel extends ViewModel {
+public class LocationViewModel extends ViewModel {
+
+    private final CompositeDisposable disposables = new CompositeDisposable();
 
     private final ValidateRawInputUseCase validateRawInputUseCase;
-    private final CompositeDisposable disposables = new CompositeDisposable();
+    private final GetLocationsUseCase getLocationsUseCase;
+
     private final MutableLiveData<RawInputUiState> _rawInputUiState = new MutableLiveData<>();
     public final LiveData<RawInputUiState> rawInputUiState = _rawInputUiState;
 
+    private final MutableLiveData<LocationsUiState> _getLocationsState = new MutableLiveData<>();
+    public final LiveData<LocationsUiState> getLocationsState = _getLocationsState;
+
     @Inject
-    public RawInputViewModel(ValidateRawInputUseCase validateRawInputUseCase) {
+    public LocationViewModel(ValidateRawInputUseCase validateRawInputUseCase, GetLocationsUseCase getLocationsUseCase) {
         this.validateRawInputUseCase = validateRawInputUseCase;
+        this.getLocationsUseCase = getLocationsUseCase;
+        loadLocations();
     }
 
     public void submit(String rawText) {
@@ -38,6 +50,22 @@ public class RawInputViewModel extends ViewModel {
                 validatedData -> _rawInputUiState.setValue(new RawInputUiState.Success(LocationUiMapper.toUi(validatedData))),
                 throwable -> _rawInputUiState.setValue(new RawInputUiState.Error(throwable.getMessage()))
             ));
+    }
+
+    private void loadLocations() {
+        _getLocationsState.setValue(new LocationsUiState.Loading());
+        disposables.add(
+            getLocationsUseCase.execute()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(locations -> locations.stream()
+                    .map(LocationUiMapper::toUi)
+                    .collect(Collectors.toList()))
+                .subscribe(
+                    result -> _getLocationsState.setValue(new LocationsUiState.Success(result)),
+                    error -> _getLocationsState.setValue(new LocationsUiState.Error(error.getMessage()))
+                )
+        );
     }
 
     @Override

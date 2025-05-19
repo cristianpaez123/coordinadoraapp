@@ -123,4 +123,9 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
+
+    <include
+        android:id="@+id/includeLoadingOverlay"
+        layout="@layout/loading_overlay" />
+
 </FrameLayout>

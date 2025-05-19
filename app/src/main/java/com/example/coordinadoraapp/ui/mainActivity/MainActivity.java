@@ -10,11 +10,9 @@ import android.graphics.RectF;
 import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.camera.view.PreviewView;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -33,7 +31,7 @@ import com.example.coordinadoraapp.ui.mainActivity.adapter.LocationAdapter;
 import com.example.coordinadoraapp.ui.mainActivity.state.LocationsUiState;
 import com.example.coordinadoraapp.ui.mainActivity.state.RawInputUiState;
 import com.example.coordinadoraapp.ui.mainActivity.viewmodel.QrScannerViewModel;
-import com.example.coordinadoraapp.ui.mainActivity.viewmodel.RawInputViewModel;
+import com.example.coordinadoraapp.ui.mainActivity.viewmodel.LocationViewModel;
 import com.example.coordinadoraapp.ui.mainActivity.viewmodel.SessionViewModel;
 import com.example.coordinadoraapp.ui.model.LocationUi;
 import com.example.coordinadoraapp.utils.CameraPermissionManager;
@@ -52,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements LocationAdapter.O
     MainRepository repository;
 
     private QrScannerViewModel qrScannerViewModel;
-    private RawInputViewModel rawInputViewModel;
+    private LocationViewModel locationViewModel;
     private SessionViewModel sessionViewModel;
 
     private CameraPermissionManager permissionManager;
@@ -61,14 +59,13 @@ public class MainActivity extends AppCompatActivity implements LocationAdapter.O
 
     LocationAdapter adapter = new LocationAdapter(this);
 
-    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         MyApplication.getAppComponent().inject(this);
         super.onCreate(savedInstanceState);
 
         qrScannerViewModel = new ViewModelProvider(this, viewModelFactory).get(QrScannerViewModel.class);
-        rawInputViewModel = new ViewModelProvider(this, viewModelFactory).get(RawInputViewModel.class);
+        locationViewModel = new ViewModelProvider(this, viewModelFactory).get(LocationViewModel.class);
         sessionViewModel = new ViewModelProvider(this, viewModelFactory).get(SessionViewModel.class);
 
         permissionManager = new CameraPermissionManager(this, REQUEST_CODE_CAMERA);
@@ -96,13 +93,13 @@ public class MainActivity extends AppCompatActivity implements LocationAdapter.O
 
         binding.editText.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                rawInputViewModel.submit(v.getText().toString());
+                locationViewModel.submit(v.getText().toString());
                 return true;
             }
             return false;
         });
 
-        binding.btnConfirm.setOnClickListener(v -> rawInputViewModel.submit(binding.editText.getText().toString()));
+        binding.btnConfirm.setOnClickListener(v -> locationViewModel.submit(binding.editText.getText().toString()));
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
         binding.recyclerView.setAdapter(adapter);
     }
@@ -112,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements LocationAdapter.O
             showCamera();
         } else {
             if (permissionManager.shouldShowRationale()) {
-                Toast.makeText(this, "Necesitamos permiso de cámara para escanear el código QR", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.camera_permission_rationale), Toast.LENGTH_SHORT).show();
             }
             permissionManager.requestPermission();
         }
@@ -126,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements LocationAdapter.O
             qrScannerViewModel.initQrScanner(this, this, binding.previewView, guideRect, new QrResultListener() {
                 @Override
                 public void onQrDetected(String value) {
-                    rawInputViewModel.submit(value);
+                    locationViewModel.submit(value);
                     qrScannerViewModel.notifyQrVisible(true);
                     qrScannerViewModel.triggerStopCamera();
                 }
@@ -165,13 +162,13 @@ public class MainActivity extends AppCompatActivity implements LocationAdapter.O
             }
         });
 
-        sessionViewModel.locationsState.observe(this, state -> {
+        locationViewModel.getLocationsState.observe(this, state -> {
             if (state instanceof LocationsUiState.Success) {
                 adapter.updateItems(((LocationsUiState.Success) state).data);
             }
         });
 
-        rawInputViewModel.rawInputUiState.observe(this, state -> {
+        locationViewModel.rawInputUiState.observe(this, state -> {
             if (state instanceof RawInputUiState.Success) {
                 LocationUi location = ((RawInputUiState.Success) state).locationUi;
                 adapter.addItemAtTop(location);
