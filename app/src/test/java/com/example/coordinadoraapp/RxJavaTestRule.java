@@ -14,7 +14,6 @@ public class RxJavaTestRule implements TestRule {
         return new Statement() {
             @Override
             public void evaluate() throws Throwable {
-                // 🔒 CRUCIAL: asegurar que no devuelvan null
                 RxJavaPlugins.setInitIoSchedulerHandler(scheduler -> Schedulers.trampoline());
                 RxJavaPlugins.setInitComputationSchedulerHandler(scheduler -> Schedulers.trampoline());
                 RxJavaPlugins.setInitNewThreadSchedulerHandler(scheduler -> Schedulers.trampoline());
@@ -28,7 +27,7 @@ public class RxJavaTestRule implements TestRule {
                 try {
                     base.evaluate();
                 } finally {
-                    RxJavaPlugins.reset(); // Limpia después del test
+                    RxJavaPlugins.reset();
                 }
             }
         };
