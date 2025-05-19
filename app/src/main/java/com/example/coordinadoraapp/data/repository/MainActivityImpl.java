@@ -1,6 +1,6 @@
 package com.example.coordinadoraapp.data.repository;
 
-import com.example.coordinadoraapp.domain.mainActivity.MainActivityRepository;
+import com.example.coordinadoraapp.domain.repository.MainRepository;
 import com.google.mlkit.vision.barcode.BarcodeScanner;
 import com.google.mlkit.vision.barcode.common.Barcode;
 import com.google.mlkit.vision.common.InputImage;
@@ -11,7 +11,7 @@ import javax.inject.Inject;
 
 import io.reactivex.rxjava3.core.Single;
 
-public class MainActivityImpl implements MainActivityRepository {
+public class MainActivityImpl implements MainRepository {
 
     private final BarcodeScanner barcodeScanner;
 

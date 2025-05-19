@@ -3,7 +3,6 @@ package com.example.coordinadoraapp.ui.mainActivity;
 import android.content.Context;
 import android.graphics.RectF;
 import android.util.Base64;
-import android.util.Log;
 
 import androidx.camera.view.PreviewView;
 import androidx.lifecycle.LifecycleOwner;
@@ -11,13 +10,12 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.coordinadoraapp.domain.mainActivity.QrAnalyzerUC;
-import com.example.coordinadoraapp.domain.mainActivity.QrResultListener;
-import com.example.coordinadoraapp.domain.mainActivity.StartQrScannerUseCase;
+import com.example.coordinadoraapp.domain.usecase.QrAnalyzerUseCase;
+import com.example.coordinadoraapp.domain.QrResultListener;
+import com.example.coordinadoraapp.domain.usecase.StartQrScannerUseCase;
 import com.example.coordinadoraapp.domain.usecase.GetLocationsUseCase;
 import com.example.coordinadoraapp.domain.usecase.LogoutUseCase;
 import com.example.coordinadoraapp.domain.usecase.ValidateRawInputUseCase;
-import com.example.coordinadoraapp.sync.LocationSyncManager;
 import com.example.coordinadoraapp.ui.mainActivity.state.LocationsUiState;
 import com.example.coordinadoraapp.ui.mainActivity.state.RawInputUiState;
 import com.example.coordinadoraapp.ui.mapper.LocationUiMapper;
@@ -35,7 +33,7 @@ public class MainActivityViewModel extends ViewModel {
     private final MutableLiveData<Boolean> _isQrVisible = new MutableLiveData<>(false);
     public LiveData<Boolean> isQrVisible = _isQrVisible;
 
-    private final QrAnalyzerUC analyzer;
+    private final QrAnalyzerUseCase analyzer;
     private final StartQrScannerUseCase startScannerUseCase;
 
     private final GetLocationsUseCase getLocationsUseCase;
@@ -59,7 +57,7 @@ public class MainActivityViewModel extends ViewModel {
     public MainActivityViewModel(
         LogoutUseCase logoutUseCase,
         ValidateRawInputUseCase validateRawInputUseCase,
-        QrAnalyzerUC analyzer,
+        QrAnalyzerUseCase analyzer,
         StartQrScannerUseCase startScannerUseCase,
         GetLocationsUseCase getLocationsUseCase
     ) {
