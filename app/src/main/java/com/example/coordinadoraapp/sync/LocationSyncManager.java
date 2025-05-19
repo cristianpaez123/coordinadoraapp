@@ -12,6 +12,8 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class LocationSyncManager {
 
+    private static final int LOCATIONS_TO_SYNC = 5;
+
     private final LocationRepository locationRepository;
     private final RemoteLocationBackupRepository remoteBackupRepository;
     private final CompositeDisposable disposables = new CompositeDisposable();
@@ -31,7 +33,7 @@ public class LocationSyncManager {
             locationRepository.getLocationCountStream()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(count -> {
-                    if (count > 0 && count % 5 == 0) {
+                    if (count > 0 && count % LOCATIONS_TO_SYNC == 0) {
                         syncAllLocations();
                     }
                 }, throwable -> {
@@ -44,6 +46,10 @@ public class LocationSyncManager {
     private void syncAllLocations() {
         disposables.add(
             locationRepository.getAllLocations()
+                .map(locations -> {
+                    int size = locations.size();
+                    return locations.subList(Math.max(size - LOCATIONS_TO_SYNC, 0), size);
+                })
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .flatMapCompletable(remoteBackupRepository::backupLocations)
