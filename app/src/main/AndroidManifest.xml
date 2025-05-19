@@ -41,7 +41,6 @@
             android:exported="true"
             android:windowSoftInputMode="adjustResize" />
 
-        <activity
-            android:name=".ui.mainActivity.MainActivity" />
+        <activity android:name=".ui.mainActivity.MainActivity" />
     </application>
 </manifest>
