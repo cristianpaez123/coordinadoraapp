@@ -14,4 +14,7 @@
     <string name="error_user_already_exists">An account with this email already exists</string>
     <string name="error_network">Network error. Please check your connection</string>
 
+    <string name="camera_permission_denied">Camera permission denied</string>
+
+
 </resources>

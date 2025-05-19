@@ -37,7 +37,6 @@ import com.example.coordinadoraapp.ui.mainActivity.viewmodel.RawInputViewModel;
 import com.example.coordinadoraapp.ui.mainActivity.viewmodel.SessionViewModel;
 import com.example.coordinadoraapp.ui.model.LocationUi;
 import com.example.coordinadoraapp.utils.CameraPermissionManager;
-import com.example.coordinadoraapp.utils.QrOverlay;
 
 import javax.inject.Inject;
 
@@ -56,11 +55,6 @@ public class MainActivity extends AppCompatActivity implements LocationAdapter.O
     private RawInputViewModel rawInputViewModel;
     private SessionViewModel sessionViewModel;
 
-    private ImageView cameraIcon;
-    private PreviewView previewView;
-    private ImageView btnCloseCamera;
-
-    private QrOverlay qrOverlay;
     private CameraPermissionManager permissionManager;
 
     private ActivityMainBinding binding;
@@ -97,12 +91,7 @@ public class MainActivity extends AppCompatActivity implements LocationAdapter.O
     }
 
     private void setupUI() {
-        cameraIcon = findViewById(R.id.cameraIcon);
-        previewView = findViewById(R.id.previewView);
-        qrOverlay = findViewById(R.id.qrOverlay);
-        btnCloseCamera = findViewById(R.id.btnCloseCamera);
-
-        cameraIcon.setOnClickListener(v -> handleCameraPermission());
+        binding.cameraIcon.setOnClickListener(v -> handleCameraPermission());
         binding.btnLogin.setOnClickListener(v -> sessionViewModel.logout());
 
         binding.editText.setOnEditorActionListener((v, actionId, event) -> {
@@ -130,11 +119,11 @@ public class MainActivity extends AppCompatActivity implements LocationAdapter.O
     }
 
     private void showCamera() {
-        previewView.setVisibility(View.VISIBLE);
-        btnCloseCamera.setVisibility(View.VISIBLE);
-        qrOverlay.post(() -> {
-            RectF guideRect = qrOverlay.getGuideRect();
-            qrScannerViewModel.initQrScanner(this, this, previewView, guideRect, new QrResultListener() {
+        binding.previewView.setVisibility(View.VISIBLE);
+        binding.btnCloseCamera.setVisibility(View.VISIBLE);
+        binding.qrOverlay.post(() -> {
+            RectF guideRect = binding.qrOverlay.getGuideRect();
+            qrScannerViewModel.initQrScanner(this, this, binding.previewView, guideRect, new QrResultListener() {
                 @Override
                 public void onQrDetected(String value) {
                     rawInputViewModel.submit(value);
@@ -151,15 +140,15 @@ public class MainActivity extends AppCompatActivity implements LocationAdapter.O
     }
 
     private void closeCamera() {
-        btnCloseCamera.setOnClickListener(v -> {
-            previewView.setVisibility(View.GONE);
-            btnCloseCamera.setVisibility(View.GONE);
+        binding.btnCloseCamera.setOnClickListener(v -> {
+            binding.previewView.setVisibility(View.GONE);
+            binding.btnCloseCamera.setVisibility(View.GONE);
             qrScannerViewModel.stopQrScanner();
         });
     }
 
     private void observeViewModels() {
-        qrScannerViewModel.isQrVisible.observe(this, isVisible -> qrOverlay.setBorderColor(isVisible ? Color.GREEN : Color.WHITE));
+        qrScannerViewModel.isQrVisible.observe(this, isVisible -> binding.qrOverlay.setBorderColor(isVisible ? Color.GREEN : Color.WHITE));
 
         qrScannerViewModel.stopCamera.observe(this, stop -> {
             if (stop != null && stop) {
@@ -200,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements LocationAdapter.O
             } else if (!permissionManager.shouldShowRationale()) {
                 permissionManager.openAppSettings();
             } else {
-                Toast.makeText(this, "Permiso de cámara denegado", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, getString(R.string.camera_permission_denied), Toast.LENGTH_LONG).show();
             }
         }
     }
