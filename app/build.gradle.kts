@@ -85,6 +85,7 @@ tasks.withType<Test> {
     jvmArgs("-Dnet.bytebuddy.experimental=true")
 }
 
+
 firebaseAppDistribution {
     appId = "1:718347440367:android:fc67b50615af1d3ddd0b1a"
     artifactType = "APK"
