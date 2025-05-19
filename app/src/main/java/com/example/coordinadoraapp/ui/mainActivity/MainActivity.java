@@ -24,7 +24,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.coordinadoraapp.MyApplication;
 import com.example.coordinadoraapp.R;
 import com.example.coordinadoraapp.databinding.ActivityMainBinding;
-import com.example.coordinadoraapp.domain.mainActivity.MainActivityRepository;
+import com.example.coordinadoraapp.domain.repository.MainRepository;
 import com.example.coordinadoraapp.ui.Map.MapFragment;
 import com.example.coordinadoraapp.sync.LocationSyncManager;
 import com.example.coordinadoraapp.ui.login.LoginActivity;
@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements LocationAdapter.O
     @Inject
     LocationSyncManager locationSyncManager;
     @Inject
-    MainActivityRepository repository;
+    MainRepository repository;
     private MainActivityViewModel viewModel;
     private ImageView cameraIcon;
     private PreviewView previewView;

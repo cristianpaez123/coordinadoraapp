@@ -1,4 +1,4 @@
-package com.example.coordinadoraapp.domain.mainActivity;
+package com.example.coordinadoraapp.domain.usecase;
 
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -7,6 +7,8 @@ import android.media.Image;
 import androidx.camera.core.ImageAnalysis;
 import androidx.camera.core.ImageProxy;
 
+import com.example.coordinadoraapp.domain.repository.MainRepository;
+import com.example.coordinadoraapp.domain.QrResultListener;
 import com.google.mlkit.vision.barcode.common.Barcode;
 import com.google.mlkit.vision.common.InputImage;
 
@@ -17,15 +19,15 @@ import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
-public class QrAnalyzerUC implements ImageAnalysis.Analyzer {
+public class QrAnalyzerUseCase implements ImageAnalysis.Analyzer {
 
-    private final MainActivityRepository repository;
+    private final MainRepository repository;
     private RectF guideRect;
     private QrResultListener listener;
     private final CompositeDisposable disposables = new CompositeDisposable();
 
     @Inject
-    public QrAnalyzerUC(MainActivityRepository repository) {
+    public QrAnalyzerUseCase(MainRepository repository) {
         this.repository = repository;
     }
 

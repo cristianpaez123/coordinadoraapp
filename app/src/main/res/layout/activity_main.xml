@@ -108,7 +108,7 @@
                     android:layout_height="40dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:contentDescription="Confirmar"
-                    android:src="@drawable/ic_search"
+                    android:src="@drawable/ic_arrow"
                     app:layout_constraintBottom_toBottomOf="@id/editText"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@id/editText" />

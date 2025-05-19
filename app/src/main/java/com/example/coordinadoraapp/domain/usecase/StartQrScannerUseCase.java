@@ -1,4 +1,4 @@
-package com.example.coordinadoraapp.domain.mainActivity;
+package com.example.coordinadoraapp.domain.usecase;
 
 import android.content.Context;
 import android.util.Log;
@@ -11,6 +11,7 @@ import androidx.camera.view.PreviewView;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LifecycleOwner;
 
+import com.example.coordinadoraapp.domain.usecase.QrAnalyzerUseCase;
 import com.google.common.util.concurrent.ListenableFuture;
 
 public class StartQrScannerUseCase {
@@ -21,7 +22,7 @@ public class StartQrScannerUseCase {
             Context context,
             LifecycleOwner lifecycleOwner,
             PreviewView previewView,
-            QrAnalyzerUC analyzer
+            QrAnalyzerUseCase analyzer
     ) {
         ListenableFuture<ProcessCameraProvider> cameraProviderFuture = ProcessCameraProvider.getInstance(context);
 

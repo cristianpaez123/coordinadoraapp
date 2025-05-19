@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.example.coordinadoraapp.data.local.LocationLocalDataSource;
 import com.example.coordinadoraapp.data.repository.MainActivityImpl;
-import com.example.coordinadoraapp.domain.mainActivity.MainActivityRepository;
+import com.example.coordinadoraapp.domain.repository.MainRepository;
 import com.example.coordinadoraapp.domain.repository.LocationRepository;
 import com.example.coordinadoraapp.domain.repository.RemoteLocationBackupRepository;
 import com.example.coordinadoraapp.sync.LocationSyncManager;
@@ -58,7 +58,7 @@ public class AppModule {
     }
 
     @Provides
-    MainActivityRepository provideMainActivityRepository(BarcodeScanner scanner) {
+    MainRepository provideMainActivityRepository(BarcodeScanner scanner) {
         return new MainActivityImpl(scanner);
     }
 

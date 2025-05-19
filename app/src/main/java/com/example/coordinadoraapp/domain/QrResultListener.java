@@ -1,4 +1,4 @@
-package com.example.coordinadoraapp.domain.mainActivity;
+package com.example.coordinadoraapp.domain;
 
 public interface QrResultListener {
     void onQrDetected(String value);
