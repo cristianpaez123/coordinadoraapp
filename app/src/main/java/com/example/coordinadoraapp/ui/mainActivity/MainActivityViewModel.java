@@ -38,6 +38,7 @@ public class MainActivityViewModel extends ViewModel {
     private final MutableLiveData<Boolean> logoutSuccess = new MutableLiveData<>();
 
     private final MutableLiveData<RawInputUiState> _rawInputUiState = new MutableLiveData<>();
+    public final LiveData<RawInputUiState> rawInputUiState = _rawInputUiState;
 
     private final MutableLiveData<LocationsUiState> _locationsState = new MutableLiveData<>();
     public final LiveData<LocationsUiState> locationsState = _locationsState;

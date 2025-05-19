@@ -19,6 +19,11 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
         notifyDataSetChanged(); // puedes usar DiffUtil si deseas mejor rendimiento
     }
 
+    public void addItemAtTop(LocationUi newItem) {
+        items.add(0, newItem);
+        notifyItemInserted(0);
+    }
+
     @NonNull
     @Override
     public LocationViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

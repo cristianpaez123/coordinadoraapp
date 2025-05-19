@@ -13,7 +13,6 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.camera.view.PreviewView;
 import androidx.core.graphics.Insets;
@@ -22,9 +21,6 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-
-import android.widget.Toast;
-
 import com.example.coordinadoraapp.MyApplication;
 import com.example.coordinadoraapp.R;
 import com.example.coordinadoraapp.databinding.ActivityMainBinding;
@@ -32,10 +28,10 @@ import com.example.coordinadoraapp.domain.mainActivity.MainActivityRepository;
 import com.example.coordinadoraapp.ui.login.LoginActivity;
 import com.example.coordinadoraapp.ui.mainActivity.adapter.LocationAdapter;
 import com.example.coordinadoraapp.ui.mainActivity.state.LocationsUiState;
+import com.example.coordinadoraapp.ui.mainActivity.state.RawInputUiState;
+import com.example.coordinadoraapp.ui.model.LocationUi;
 import com.example.coordinadoraapp.utils.CameraPermissionManager;
 import com.example.coordinadoraapp.utils.QrOverlay;
-import com.example.coordinadoraapp.databinding.ActivityMainBinding;
-import com.example.coordinadoraapp.ui.login.LoginActivity;
 
 import javax.inject.Inject;
 
@@ -133,6 +129,15 @@ public class MainActivity extends AppCompatActivity {
                 adapter.updateItems(((LocationsUiState.Success) state).data);
             }
         });
+
+        viewModel.rawInputUiState.observe(this, state -> {
+            if (state instanceof RawInputUiState.Success) {
+                LocationUi location = ((RawInputUiState.Success) state).locationUi;
+                adapter.addItemAtTop(location);
+                binding.recyclerView.scrollToPosition(0);
+            }
+        });
+
     }
 
     @Override

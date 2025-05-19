@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import com.example.coordinadoraapp.domain.model.Location;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import io.reactivex.rxjava3.core.Completable;
@@ -67,6 +68,7 @@ public class LocationLocalDataSource {
 
                     locations.add(new Location(label, latitude, longitude, observation));
                 }
+                Collections.reverse(locations);
             } finally {
                 if (cursor != null) cursor.close();
                 db.close();
