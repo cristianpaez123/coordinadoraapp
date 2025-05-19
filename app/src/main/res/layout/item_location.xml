@@ -8,6 +8,7 @@
     app:cardElevation="4dp">
 
     <LinearLayout
+        android:id="@+id/linearContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -32,7 +33,7 @@
                 android:id="@+id/iconMap"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_coordinadora" />
+                android:src="@drawable/ic_location" />
         </LinearLayout>
 
         <TextView

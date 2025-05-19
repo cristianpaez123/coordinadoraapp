@@ -13,10 +13,14 @@ import java.util.List;
 public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.LocationViewHolder> {
 
     private List<LocationUi> items = new ArrayList<>();
+    private static OnMapClickListener mapClickListener;
 
+    public LocationAdapter(OnMapClickListener mapClickListener) {
+        this.mapClickListener = mapClickListener;
+    }
     public void updateItems(List<LocationUi> newItems) {
         this.items = newItems;
-        notifyDataSetChanged(); // puedes usar DiffUtil si deseas mejor rendimiento
+        notifyDataSetChanged();
     }
 
     public void addItemAtTop(LocationUi newItem) {
@@ -53,7 +57,15 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
         public void bind(LocationUi item) {
             binding.textLabel.setText("etiqueta1d: " + item.label);
             binding.textObservation.setText("Observación: " + item.observation);
-            // Puedes cargar íconos si lo necesitas (ej: Glide o directamente desde drawable)
+
+            binding.linearContainer.setOnClickListener(v -> {
+                if (mapClickListener != null) {
+                    mapClickListener.onMapClick(item.latitude, item.longitude);
+                }
+            });
         }
+    }
+    public interface OnMapClickListener {
+        void onMapClick(String latitude,String longitude);
     }
 }

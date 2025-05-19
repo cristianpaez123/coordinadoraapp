@@ -14,11 +14,8 @@ import io.reactivex.rxjava3.core.Single;
 
 public class GetMapPolylineUseCase {
 
-    public Single<MapPolylineModel> execute() {
+    public Single<MapPolylineModel> execute(LatLng pointA, LatLng pointB) {
         return Single.fromCallable(() -> {
-            LatLng pointA = new LatLng(4.6483, -74.2479); // Bogotá
-            LatLng pointB = new LatLng(4.7110, -74.0721); // otro punto
-
             PolylineOptions options = new PolylineOptions()
                     .add(pointA)
                     .add(pointB)

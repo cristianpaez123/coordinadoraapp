@@ -28,7 +28,7 @@ public abstract class ViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(MapViewModel.class)
-    abstract ViewModel bindMapViewModel(MainActivityViewModel mainActivityViewModel);
+    abstract ViewModel bindMapViewModel(MapViewModel mainActivityViewModel);
 
     @Binds
     abstract ViewModelProvider.Factory bindViewModelFactory(ViewModelFactory factory);
