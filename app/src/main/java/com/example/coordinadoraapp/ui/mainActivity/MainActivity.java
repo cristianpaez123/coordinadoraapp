@@ -1,28 +1,25 @@
 package com.example.coordinadoraapp.ui.mainActivity;
 
+import static com.example.coordinadoraapp.utils.CameraPermissionManager.REQUEST_CODE_CAMERA;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.RectF;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.camera.view.PreviewView;
-import androidx.core.app.ActivityCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
-import android.Manifest;
 import android.widget.Toast;
 import com.example.coordinadoraapp.MyApplication;
 import com.example.coordinadoraapp.R;
 import com.example.coordinadoraapp.domain.mainActivity.MainActivityRepository;
-import com.example.coordinadoraapp.utils.CameraPermissionHelper;
+import com.example.coordinadoraapp.utils.CameraPermissionManager;
 import com.example.coordinadoraapp.utils.QrOverlay;
 import com.example.coordinadoraapp.databinding.ActivityLoginBinding;
 import com.example.coordinadoraapp.databinding.ActivityMainBinding;
@@ -42,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
     private ImageView cameraIcon;
     private PreviewView previewView;
     private QrOverlay qrOverlay;
+    private CameraPermissionManager permissionManager;
+
 
     private ActivityMainBinding binding;
 
@@ -50,32 +49,29 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         MyApplication.getAppComponent().inject(this);
         super.onCreate(savedInstanceState);
-        setupViewBinding();
         viewModel = new ViewModelProvider(this, viewModelFactory).get(MainActivityViewModel.class);
-
+        permissionManager = new CameraPermissionManager(this, REQUEST_CODE_CAMERA);
+        setupViewBinding();
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.nuevomain), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        setupUI();
+        observeViewModel();
+    }
+
+    private void setupViewBinding() {
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+    }
+
+    private void setupUI() {
         cameraIcon = findViewById(R.id.cameraIcon);
         previewView = findViewById(R.id.previewView);
         qrOverlay = findViewById(R.id.qrOverlay);
 
-        cameraIcon.setOnClickListener(v -> {
-            if (CameraPermissionHelper.hasCameraPermission(this)) {
-                startScannerAfterLayout();
-            } else {
-                if (CameraPermissionHelper.shouldShowRationale(this)) {
-                }
-                CameraPermissionHelper.requestCameraPermission(this);
-            }
-        });
-        viewModel.getIsQrVisible().observe(this, isVisible -> {
-            qrOverlay.setBorderColor(isVisible ? Color.GREEN : Color.WHITE);
-        });
-
-
+        cameraIcon.setOnClickListener(v -> handleCameraPermission());
 
         binding.btnLogin.setOnClickListener(v -> viewModel.logout());
 
@@ -86,14 +82,39 @@ public class MainActivity extends AppCompatActivity {
             }
             return false;
         });
+    }
+
+    private void handleCameraPermission() {
+        if (permissionManager.hasPermission()) {
+            startQrScannerWithOverlayGuide();
+        } else {
+            if (permissionManager.shouldShowRationale()) {
+                Toast.makeText(this, "Necesitamos permiso de cámara para escanear el código QR", Toast.LENGTH_SHORT).show();
+            }
+            permissionManager.requestPermission();
+        }
+    }
+
+    private void observeViewModel() {
+        viewModel.getIsQrVisible().observe(this, isVisible -> {
+            qrOverlay.setBorderColor(isVisible ? Color.GREEN : Color.WHITE);
+        });
 
         viewModel.getLogoutSuccess().observe(this, success -> {
-            if (success != null && success) {
+            if (Boolean.TRUE.equals(success)) {
                 startActivity(new Intent(this, LoginActivity.class));
                 finish();
             }
         });
     }
+
+    private void startQrScannerWithOverlayGuide() {
+        qrOverlay.post(() -> {
+            RectF guideRect = qrOverlay.getGuideRect();
+            viewModel.initQrScanner(this, this, previewView, guideRect);
+        });
+    }
+
 
     private void startScannerAfterLayout() {
         qrOverlay.post(() -> {
@@ -106,28 +127,14 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if (requestCode == CameraPermissionHelper.REQUEST_CODE_CAMERA) {
+        if (requestCode == REQUEST_CODE_CAMERA) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 startScannerAfterLayout();
+            } else if (!permissionManager.shouldShowRationale()) {
+                permissionManager.openAppSettings();
             } else {
-                if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)) {
-                    openAppSettings();
-                } else {
-                    Toast.makeText(this, "Permiso de cámara requerido para escanear", Toast.LENGTH_LONG).show();
-                }
+                Toast.makeText(this, "Permiso de cámara denegado", Toast.LENGTH_LONG).show();
             }
         }
-    }
-
-    private void openAppSettings() {
-        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-        Uri uri = Uri.fromParts("package", getPackageName(), null);
-        intent.setData(uri);
-        startActivity(intent);
-    }
-
-    private void setupViewBinding() {
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
     }
 }

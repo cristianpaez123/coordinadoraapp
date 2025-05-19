@@ -10,7 +10,6 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-import com.example.coordinadoraapp.domain.mainActivity.MainActivityRepository;
 import com.example.coordinadoraapp.domain.mainActivity.QrAnalyzerUC;
 import com.example.coordinadoraapp.domain.mainActivity.QrResultListener;
 import com.example.coordinadoraapp.domain.mainActivity.StartQrScannerUseCase;
@@ -32,8 +31,6 @@ public class MainActivityViewModel extends ViewModel {
     private final MutableLiveData<Boolean> logoutSuccess = new MutableLiveData<>();
 
     private final MutableLiveData<RawInputUiState> _rawInputUiState = new MutableLiveData<>();
-    public final LiveData<RawInputUiState> rawInputUiState = _rawInputUiState;
-
     private final CompositeDisposable disposables = new CompositeDisposable();
     private final LogoutUseCase logoutUseCase;
     private final ValidateRawInputUseCase validateRawInputUseCase;
@@ -42,8 +39,6 @@ public class MainActivityViewModel extends ViewModel {
     public LiveData<Boolean> getIsQrVisible() {
         return isQrVisible;
     }
-
-    private String lastDetectedQr = null;
 
     @Inject
     public MainActivityViewModel(LogoutUseCase logoutUseCase, ValidateRawInputUseCase validateRawInputUseCase, QrAnalyzerUC analyzer, StartQrScannerUseCase startScannerUseCase) {
@@ -55,12 +50,6 @@ public class MainActivityViewModel extends ViewModel {
 
     public LiveData<Boolean> getLogoutSuccess() {
         return logoutSuccess;
-    }
-
-
-    public void onQrVisible(String qrValue) {
-        lastDetectedQr = qrValue;
-        isQrVisible.setValue(true);
     }
 
     public void initQrScanner(Context context, LifecycleOwner lifecycleOwner, PreviewView previewView, RectF guideRect) {
@@ -78,11 +67,6 @@ public class MainActivityViewModel extends ViewModel {
             }
         });
         startScannerUseCase.execute(context, lifecycleOwner, previewView, analyzer);
-    }
-
-
-    public void onQrNotVisible() {
-        isQrVisible.setValue(false);
     }
 
     public void submitEncodedText(String rawText) {
