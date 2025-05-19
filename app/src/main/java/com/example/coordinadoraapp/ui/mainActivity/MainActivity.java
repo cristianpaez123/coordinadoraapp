@@ -1,6 +1,7 @@
 package com.example.coordinadoraapp.ui.mainActivity;
 
 import static com.example.coordinadoraapp.utils.CameraPermissionManager.REQUEST_CODE_CAMERA;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -9,21 +10,25 @@ import android.graphics.RectF;
 import android.os.Bundle;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ImageView;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.camera.view.PreviewView;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
-import android.widget.Toast;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
 import com.example.coordinadoraapp.MyApplication;
 import com.example.coordinadoraapp.R;
+import com.example.coordinadoraapp.databinding.ActivityMainBinding;
 import com.example.coordinadoraapp.domain.mainActivity.MainActivityRepository;
+import com.example.coordinadoraapp.ui.login.LoginActivity;
+import com.example.coordinadoraapp.ui.mainActivity.adapter.LocationAdapter;
+import com.example.coordinadoraapp.ui.mainActivity.state.LocationsUiState;
 import com.example.coordinadoraapp.utils.CameraPermissionManager;
 import com.example.coordinadoraapp.utils.QrOverlay;
-import com.example.coordinadoraapp.databinding.ActivityLoginBinding;
-import com.example.coordinadoraapp.databinding.ActivityMainBinding;
-import com.example.coordinadoraapp.ui.login.LoginActivity;
 
 import javax.inject.Inject;
 
@@ -41,8 +46,9 @@ public class MainActivity extends AppCompatActivity {
     private QrOverlay qrOverlay;
     private CameraPermissionManager permissionManager;
 
-
     private ActivityMainBinding binding;
+
+    LocationAdapter adapter = new LocationAdapter();
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -82,6 +88,10 @@ public class MainActivity extends AppCompatActivity {
             }
             return false;
         });
+
+        binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        binding.recyclerView.setAdapter(adapter);
+
     }
 
     private void handleCameraPermission() {
@@ -104,6 +114,12 @@ public class MainActivity extends AppCompatActivity {
             if (Boolean.TRUE.equals(success)) {
                 startActivity(new Intent(this, LoginActivity.class));
                 finish();
+            }
+        });
+
+        viewModel.locationsState.observe(this, state -> {
+            if (state instanceof LocationsUiState.Success) {
+                adapter.updateItems(((LocationsUiState.Success) state).data);
             }
         });
     }
