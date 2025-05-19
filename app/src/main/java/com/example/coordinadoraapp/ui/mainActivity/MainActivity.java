@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements LocationAdapter.O
         viewModel = new ViewModelProvider(this, viewModelFactory).get(MainActivityViewModel.class);
         permissionManager = new CameraPermissionManager(this, REQUEST_CODE_CAMERA);
         setupViewBinding();
-        ViewCompat.setOnApplyWindowInsetsListener(binding.nuevomain, (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(binding.activityLayout, (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
@@ -99,6 +99,8 @@ public class MainActivity extends AppCompatActivity implements LocationAdapter.O
             }
             return false;
         });
+
+        binding.btnConfirm.setOnClickListener(v -> viewModel.submitEncodedText( binding.editText.getText().toString()));
 
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
         binding.recyclerView.setAdapter(adapter);
@@ -138,9 +140,9 @@ public class MainActivity extends AppCompatActivity implements LocationAdapter.O
 
         viewModel.stopCamera.observe(this, stop -> {
             if (stop != null && stop) {
-                viewModel.stopCamera(); // ← detiene CameraX desde el UseCase
+                viewModel.stopCamera();
                 binding.previewView.setVisibility(View.GONE);
-                viewModel.resetStopCameraFlag(); // ← limpia el LiveData
+                viewModel.resetStopCameraFlag();
             }
         });
 

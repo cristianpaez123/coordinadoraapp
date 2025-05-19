@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/fragment_container"
-    android:layout_height="match_parent"
-    android:layout_width="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -13,7 +12,7 @@
         android:fillViewport="true">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/nuevomain"
+            android:id="@+id/activityLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="20dp">
@@ -71,31 +70,49 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/previewView" />
 
-            <ImageView
-                android:id="@+id/cameraIcon"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="8dp"
-                android:src="@drawable/ic_camera"
-                app:layout_constraintBottom_toBottomOf="@+id/editText"
-                app:layout_constraintEnd_toStartOf="@id/editText"
-                app:layout_constraintHorizontal_chainStyle="packed"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/textView" />
-
-            <EditText
-                android:id="@+id/editText"
-                android:layout_width="300dp"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:hint="Escribe aquí"
-                android:imeOptions="actionDone"
-                android:inputType="text"
-                android:text="etiqueta1d:720024556544001-latitud:6.74444-longitud:-75.45454-observacion:prueba"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/cameraIcon"
-                app:layout_constraintTop_toBottomOf="@id/textView" />
+                android:layout_marginTop="20dp"
+                app:layout_constraintTop_toBottomOf="@+id/textView"
+                tools:layout_editor_absoluteX="20dp">
+
+                <ImageView
+                    android:id="@+id/cameraIcon"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:contentDescription="Abrir cámara"
+                    android:src="@drawable/ic_camera"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <EditText
+                    android:id="@+id/editText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:hint="Escribe aquí"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:text="etiqueta1d:720024556544001-latitud:6.74444-longitud:-75.45454-observacion:prueba"
+                    app:layout_constraintBottom_toBottomOf="@id/cameraIcon"
+                    app:layout_constraintEnd_toStartOf="@id/btnConfirm"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@id/cameraIcon"
+                    app:layout_constraintTop_toTopOf="@id/cameraIcon" />
+
+                <ImageButton
+                    android:id="@+id/btnConfirm"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Confirmar"
+                    android:src="@drawable/ic_search"
+                    app:layout_constraintBottom_toBottomOf="@id/editText"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/editText" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
@@ -105,7 +122,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editText" />
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
