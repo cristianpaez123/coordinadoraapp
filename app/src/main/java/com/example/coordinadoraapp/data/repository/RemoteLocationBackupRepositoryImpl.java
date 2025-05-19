@@ -4,11 +4,17 @@ import com.example.coordinadoraapp.domain.model.Location;
 import com.example.coordinadoraapp.domain.repository.RemoteLocationBackupRepository;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Single;
 
 @Singleton
 public class RemoteLocationBackupRepositoryImpl implements RemoteLocationBackupRepository {
@@ -45,6 +51,26 @@ public class RemoteLocationBackupRepositoryImpl implements RemoteLocationBackupR
                 .addOnFailureListener(error ->
                     emitter.onError(new Exception(ERROR_SAVE_FAILED, error))
                 );
+        });
+    }
+
+    @Override
+    public Single<List<Location>> getBackedUpLocations() {
+        return Single.create(emitter -> {
+            String uid = Objects.requireNonNull(auth.getCurrentUser()).getUid();
+            firestore.collection(COLLECTION_BACKUP)
+                .document(uid)
+                .collection(SUBCOLLECTION_LOCATIONS)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    List<Location> locations = new ArrayList<>();
+                    for (QueryDocumentSnapshot doc : querySnapshot) {
+                        Location location = doc.toObject(Location.class);
+                        locations.add(location);
+                    }
+                    emitter.onSuccess(locations);
+                })
+                .addOnFailureListener(emitter::onError);
         });
     }
 }
