@@ -2,6 +2,7 @@ package com.example.coordinadoraapp.ui.mainActivity;
 
 import android.content.Context;
 import android.graphics.RectF;
+import android.util.Base64;
 import android.util.Log;
 
 import androidx.camera.view.PreviewView;
@@ -79,6 +80,7 @@ public class MainActivityViewModel extends ViewModel {
         analyzer.setListener(new QrResultListener() {
             @Override
             public void onQrDetected(String value) {
+                submitEncodedText(value);
                 _isQrVisible.postValue(true);
                 _stopCamera.postValue(true);
             }
@@ -92,8 +94,9 @@ public class MainActivityViewModel extends ViewModel {
     }
 
     public void submitEncodedText(String rawText) {
+        String base64 = Base64.encodeToString(rawText.getBytes(), Base64.NO_WRAP);
         _rawInputUiState.setValue(new RawInputUiState.Loading());
-        disposables.add(validateRawInputUseCase.execute(rawText)
+        disposables.add(validateRawInputUseCase.execute(base64)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(

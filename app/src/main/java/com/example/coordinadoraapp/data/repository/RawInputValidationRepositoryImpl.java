@@ -25,8 +25,8 @@ public class RawInputValidationRepositoryImpl implements RawInputValidationRepos
     }
 
     @Override
-    public Single<Location> submitEncodedData(String rawText) {
-        String base64 = Base64.encodeToString(rawText.getBytes(), Base64.NO_WRAP);
+    public Single<Location> submitEncodedData(String base64) {
+
         EncodedLocationPayload payload = new EncodedLocationPayload(base64);
 
         return networkRequestService.postJson(ApiConstants.VALIDATE_ENDPOINT, payload)

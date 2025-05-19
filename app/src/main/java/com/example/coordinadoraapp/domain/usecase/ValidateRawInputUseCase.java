@@ -26,8 +26,8 @@ public class ValidateRawInputUseCase {
         this.remoteBackupRepository = remoteBackupRepository;
     }
 
-    public Single<Location> execute(String rawText) {
-        return validationRepository.submitEncodedData(rawText)
+    public Single<Location> execute(String base64) {
+        return validationRepository.submitEncodedData(base64)
             .flatMap(location ->
                 locationRepository.saveLocation(location)
                     .andThen(Single.just(location))
